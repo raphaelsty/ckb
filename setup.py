@@ -18,9 +18,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/raphaelsty/ckb",
     packages=setuptools.find_packages(),
-    install_requires=required,
+    install_requires=required + ['mkb==0.0.1'],
     package_data={
-        'ckb': []
+        'ckb': [
+            'datasets/semanlink/*.csv'
+        ]
     },
     classifiers=[
         "Programming Language :: Python :: 3",
