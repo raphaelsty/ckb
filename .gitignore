@@ -1,0 +1,11 @@
+
+build/
+__pycache__/
+*.DS_Store
+*.egg
+*.egg-info
+*.pyc
+*.ipynb_checkpoints
+*.ipynb
+*.pickle
+archives/

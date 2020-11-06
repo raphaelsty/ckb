@@ -1,0 +1,2 @@
+git+git://github.com/raphaelsty/mkb@master#egg=mkb
+transformers >= 3.0.0
