@@ -5,7 +5,9 @@ import importlib
 import torch
 
 from .base import BaseModel
-from ..scoring_function import TransE
+
+from ..scoring import TransE
+from ..scoring import RotatE
 
 
 __all__ = ['DistillBert']
@@ -66,18 +68,15 @@ class DistillBert(BaseModel):
 
     """
 
-    def __init__(self, entities, relations, scoring_function=TransE(), gamma=9, device='cuda'):
+    def __init__(self, entities, relations, scoring=TransE(), gamma=9, device='cuda'):
 
         super(DistillBert, self).__init__(
             hidden_dim=768,
-            entity_dim=768,
-            relation_dim=768,
             entities=entities,
             relations=relations,
+            scoring=scoring,
             gamma=gamma
         )
-
-        self.scoring_function = scoring_function
 
         self.model_name = 'distilbert-base-uncased'
 
@@ -119,22 +118,3 @@ class DistillBert(BaseModel):
         pooler = hidden_state[:, 0]
 
         return pooler
-
-    def forward(self, sample, negative_sample=None, mode=None):
-        """Compute scores of input sample, negative sample with respect to the mode."""
-
-        head, relation, tail, shape = self.encode(
-            sample=sample,
-            negative_sample=negative_sample,
-            mode=mode
-        )
-
-        score = self.scoring_function(
-            head=head,
-            relation=relation,
-            tail=tail,
-            gamma=self.gamma,
-            mode=mode,
-        )
-
-        return score.view(shape)

@@ -4,6 +4,8 @@ import torch.nn as nn
 
 import mkb.models as mkb_models
 
+from ..scoring import RotatE
+
 
 __all__ = ['BaseModel']
 
@@ -14,14 +16,22 @@ class BaseModel(mkb_models.base.BaseModel):
     Example:
 
         >>> from ckb import models
+        >>> from ckb import scoring
         >>> from mkb import datasets as mkb_datasets
+
         >>> import torch
 
         >>> _ = torch.manual_seed(42)
 
         >>> dataset = mkb_datasets.CountriesS1(1)
 
-        >>> model = models.BaseModel(entities = dataset.entities, relations=dataset.relations, hidden_dim=3, entity_dim=3, relation_dim = 3, gamma=3)
+        >>> model = models.BaseModel(
+        ...     entities = dataset.entities,
+        ...     relations=dataset.relations,
+        ...     hidden_dim=3,
+        ...     gamma=3,
+        ...     scoring=scoring.TransE(),
+        ... )
 
         >>> sample = torch.tensor([[3, 0, 4], [5, 1, 6]])
 
@@ -35,12 +45,20 @@ class BaseModel(mkb_models.base.BaseModel):
 
     """
 
-    def __init__(self, entities, relations, hidden_dim, entity_dim, relation_dim, gamma):
+    def __init__(self, entities, relations, hidden_dim, scoring, gamma):
+
+        relation_dim = hidden_dim
+        entity_dim = hidden_dim
+
+        if isinstance(scoring, RotatE):
+            relation_dim = relation_dim // 2
 
         super().__init__(
             entities=entities, relations=relations, hidden_dim=hidden_dim, entity_dim=entity_dim,
             relation_dim=relation_dim, gamma=gamma,
         )
+
+        self.scoring = scoring
 
         self.entities = {i: e for e, i in entities.items()}
         self.relations = {i: r for r, i in relations.items()}
@@ -72,6 +90,33 @@ class BaseModel(mkb_models.base.BaseModel):
             a=-self.embedding_range.item(),
             b=self.embedding_range.item()
         )
+
+        self.modulus = nn.Parameter(
+            torch.Tensor([[0.5 * self.embedding_range.item()]])
+        )
+
+    def forward(self, sample, negative_sample=None, mode=None):
+        """Compute scores of input sample, negative sample with respect to the mode."""
+
+        head, relation, tail, shape = self.encode(
+            sample=sample,
+            negative_sample=negative_sample,
+            mode=mode
+        )
+
+        score = self.scoring(
+            **{
+                'head': head,
+                'relation': relation,
+                'tail': tail,
+                'gamma': self.gamma,
+                'mode': mode,
+                'embedding_range': self.embedding_range,
+                'modulus': self.modulus,
+            }
+        )
+
+        return score.view(shape)
 
     def encode(self, sample, negative_sample=None, mode=None):
         """Encode input sample, negative sample with respect to the mode."""
@@ -116,22 +161,21 @@ class BaseModel(mkb_models.base.BaseModel):
         return head, relation, tail, shape
 
     def negative_encoding(self, sample, head, tail, negative_sample, mode):
-        # Negative sample if the same for every row.
-        negative_sample = [self.entities[e.item()] for e in negative_sample[0]]
 
-        negative_sample = self.encoder(e=negative_sample)
+        negative_sample = torch.stack([
+            self.encoder([self.entities[e.item()] for e in ns])
+            for ns in negative_sample]
+        )
 
         if mode == 'head-batch':
 
-            head = torch.stack(
-                [negative_sample for _ in range(sample.shape[0])])
+            head = negative_sample
 
             tail = self.encoder(e=tail).unsqueeze(1)
 
         elif mode == 'tail-batch':
 
-            tail = torch.stack(
-                [negative_sample for _ in range(sample.shape[0])])
+            tail = negative_sample
 
             head = self.encoder(e=head).unsqueeze(1)
 
