@@ -1,3 +1,5 @@
+from .base import Scoring
+
 from math import pi
 
 import torch
@@ -5,7 +7,7 @@ import torch
 __all__ = ['ComplEx']
 
 
-class ComplEx:
+class ComplEx(Scoring):
     """ComplEx scoring function.
 
     Example:
@@ -57,7 +59,7 @@ class ComplEx:
     """
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def __call__(self, head, relation, tail, mode,  **kwargs):
 

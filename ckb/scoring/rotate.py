@@ -1,3 +1,5 @@
+from .base import Scoring
+
 from math import pi
 
 import torch
@@ -5,7 +7,7 @@ import torch
 __all__ = ['RotatE']
 
 
-class RotatE:
+class RotatE(Scoring):
     """RotatE scoring function.
 
         >>> from ckb import models
@@ -55,6 +57,7 @@ class RotatE:
     """
 
     def __init__(self):
+        super().__init__()
         self.pi = pi
 
     def __call__(self, head, relation, tail, gamma, embedding_range, mode, **kwargs):

@@ -1,8 +1,9 @@
+from .base import Scoring
 
 __all__ = ['DistMult']
 
 
-class DistMult:
+class DistMult(Scoring):
     """DistMult scoring function.
 
     Example:
@@ -54,7 +55,7 @@ class DistMult:
     """
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def __call__(self, head, relation, tail, mode, **kwargs):
 

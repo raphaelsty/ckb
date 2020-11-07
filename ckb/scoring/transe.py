@@ -1,13 +1,24 @@
+from .base import Scoring
+
 import torch
 
 __all__ = ['TransE']
 
 
-class TransE:
-    """TransE scoring function."""
+class TransE(Scoring):
+    """TransE scoring function.
+
+    Example:
+
+        >>> from ckb import scoring
+
+        >>> scoring.TransE()
+        TransE scoring
+
+    """
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def __call__(self, head, relation, tail, gamma, mode, **kwargs):
 
