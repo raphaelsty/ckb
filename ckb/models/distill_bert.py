@@ -38,10 +38,31 @@ class DistillBert(BaseModel):
         ...    device = 'cpu',
         ... )
 
-        >>> sample = torch.tensor([[0, 0, 0]])
-
+        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
         >>> model(sample)
-        tensor([[3.6489]], grad_fn=<ViewBackward>)
+        tensor([[3.6489],
+                [3.5267]], grad_fn=<ViewBackward>)
+
+        >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
+        >>> model(sample)
+        tensor([[-139.6389],
+                [-144.1577]], grad_fn=<ViewBackward>)
+
+        >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
+        >>> model(sample)
+        tensor([[-139.5234],
+                [-144.4902]], grad_fn=<ViewBackward>)
+
+        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+        >>> negative_sample = torch.tensor([[1], [1]])
+
+        >>> model(sample, negative_sample, mode='head-batch')
+        tensor([[-139.5234],
+                [-144.4902]], grad_fn=<ViewBackward>)
+
+        >>> model(sample, negative_sample, mode='tail-batch')
+        tensor([[-139.6389],
+                [-144.1577]], grad_fn=<ViewBackward>)
 
     """
 

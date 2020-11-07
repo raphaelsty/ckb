@@ -11,7 +11,27 @@ __all__ = ['BaseModel']
 class BaseModel(mkb_models.base.BaseModel):
     """Base model class.
 
-    # TODO: ADD UNITS TESTS
+    Example:
+
+        >>> from ckb import models
+        >>> from mkb import datasets as mkb_datasets
+        >>> import torch
+
+        >>> _ = torch.manual_seed(42)
+
+        >>> dataset = mkb_datasets.CountriesS1(1)
+
+        >>> model = models.BaseModel(entities = dataset.entities, relations=dataset.relations, hidden_dim=3, entity_dim=3, relation_dim = 3, gamma=3)
+
+        >>> sample = torch.tensor([[3, 0, 4], [5, 1, 6]])
+
+        >>> head, relation, tail, shape = model.batch(sample)
+
+        >>> head
+        ['belize', 'falkland_islands']
+
+        >>> tail
+        ['morocco', 'saint_vincent_and_the_grenadines']
 
     """
 
@@ -63,16 +83,19 @@ class BaseModel(mkb_models.base.BaseModel):
         )
 
         if negative_sample is None:
+
             head = self.encoder(e=head).unsqueeze(1)
             tail = self.encoder(e=tail).unsqueeze(1)
+
         else:
+
             head, tail = self.negative_encoding(
                 sample=sample, head=head, tail=tail, negative_sample=negative_sample, mode=mode)
 
         return head, relation, tail, shape
 
     def batch(self, sample, negative_sample=None, mode=None):
-
+        """Process input sample."""
         sample, shape = self.format_sample(
             sample=sample,
             negative_sample=negative_sample
@@ -93,7 +116,7 @@ class BaseModel(mkb_models.base.BaseModel):
         return head, relation, tail, shape
 
     def negative_encoding(self, sample, head, tail, negative_sample, mode):
-
+        # Negative sample if the same for every row.
         negative_sample = [self.entities[e.item()] for e in negative_sample[0]]
 
         negative_sample = self.encoder(e=negative_sample)
@@ -114,6 +137,6 @@ class BaseModel(mkb_models.base.BaseModel):
 
         return head, tail
 
-    def encoder(self):
+    def encoder(self, e):
         """Encoder should be defined in the children class."""
-        pass
+        return torch.zeros(len(e))
