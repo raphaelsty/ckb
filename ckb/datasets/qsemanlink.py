@@ -5,6 +5,7 @@ import pandas as pd
 
 from mkb import datasets as mkb_datasets
 
+from ..utils import filter_entities
 from ..utils import read_csv
 
 
@@ -55,9 +56,13 @@ class QSemanlink(mkb_datasets.Dataset):
 
         path = pathlib.Path(__file__).parent.joinpath(self.filename)
 
+        custom_entities = read_csv(path=f'{path}/questions.csv', sep='|')
+
+        self.entities_to_drop = filter_entities(custom_entities)
+
         super().__init__(
-            train=read_csv(path=f'{path}/train.csv', sep='|') +
-            read_csv(path=f'{path}/questions.csv', sep='|'),
+            train=read_csv(path=f'{path}/train.csv',
+                           sep='|') + custom_entities,
             valid=read_csv(path=f'{path}/valid.csv', sep='|'),
             test=read_csv(path=f'{path}/test.csv', sep='|'),
             classification=False, pre_compute=pre_compute, batch_size=batch_size,

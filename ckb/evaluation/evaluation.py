@@ -1,12 +1,16 @@
-from mkb import evaluation as mkb_evaluation
-from mkb import models as mkb_models
-from creme import stats
-
-import tqdm
+from torch.utils import data
 
 import collections
-
+import copy
 import torch
+import tqdm
+
+from mkb import evaluation as mkb_evaluation
+from mkb import models as mkb_models
+
+from creme import stats
+
+from ..datasets import TestDataset
 
 
 __all__ = ['Evaluation']
@@ -70,26 +74,31 @@ class Evaluation(mkb_evaluation.Evaluation):
         ...     true_triples = dataset.train + dataset.valid + dataset.test,
         ...     batch_size = 1,
         ...     device = 'cpu',
+        ...     entities_to_drop = ['github']
         ... )
 
         >>> validation.eval(model = model, dataset = dataset.valid)
-        {'MRR': 0.3958, 'MR': 2.75, 'HITS@1': 0.0, 'HITS@3': 0.75, 'HITS@10': 1.0}
+        {'MRR': 0.5, 'MR': 2.5, 'HITS@1': 0.25, 'HITS@3': 1.0, 'HITS@10': 1.0}
+
+        >>> validation.eval(model = model, dataset = dataset.test)
+        {'MRR': 0.375, 'MR': 2.75, 'HITS@1': 0.0, 'HITS@3': 1.0, 'HITS@10': 1.0}
 
         >>> validation.eval_relations(model = model, dataset = dataset.valid)
         {'MRR_relations': 1.0, 'MR_relations': 1.0, 'HITS@1_relations': 1.0, 'HITS@3_relations': 1.0, 'HITS@10_relations': 1.0}
 
-        >>> validation.detail_eval(model = model, dataset = dataset.valid, threshold = 1.5)
-                  head                               tail                             metadata
-                  MRR   MR HITS@1 HITS@3 HITS@10     MRR   MR HITS@1 HITS@3 HITS@10 frequency
+        >>> validation.detail_eval(model = model, dataset = dataset.test, threshold = 1.5)
+                head                               tail                             metadata
+                MRR   MR HITS@1 HITS@3 HITS@10     MRR   MR HITS@1 HITS@3 HITS@10 frequency
         relation
-        1_1       0.000  0.0    0.0    0.0     0.0  0.0000  0.0    0.0    0.0     0.0       0.0
-        1_M       0.000  0.0    0.0    0.0     0.0  0.0000  0.0    0.0    0.0     0.0       0.0
-        M_1       0.000  0.0    0.0    0.0     0.0  0.0000  0.0    0.0    0.0     0.0       0.0
-        M_M       0.375  3.0    0.0    0.5     1.0  0.4167  2.5    0.0    1.0     1.0       1.0
+        1_1       0.0000  0.0    0.0    0.0     0.0  0.0000  0.0    0.0    0.0     0.0       0.0
+        1_M       0.0000  0.0    0.0    0.0     0.0  0.0000  0.0    0.0    0.0     0.0       0.0
+        M_1       0.0000  0.0    0.0    0.0     0.0  0.0000  0.0    0.0    0.0     0.0       0.0
+        M_M       0.3333  3.0    0.0    1.0     1.0  0.4167  2.5    0.0    1.0     1.0       1.0
 
     """
 
-    def __init__(self, entities, relations, batch_size, true_triples=[], device='cuda', num_workers=1):
+    def __init__(self, entities, relations, batch_size, true_triples=[], device='cuda',
+                 num_workers=1, entities_to_drop=[]):
 
         super().__init__(
             entities=entities,
@@ -107,6 +116,8 @@ class Evaluation(mkb_evaluation.Evaluation):
             'pRotatE': mkb_models.pRotatE,
             'ComplEx': mkb_models.ComplEx,
         }
+
+        self.entities_to_drop = [self.entities[e] for e in entities_to_drop]
 
     def eval(self, model, dataset):
         """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
@@ -151,3 +162,25 @@ class Evaluation(mkb_evaluation.Evaluation):
             dataset=dataset,
             threshold=threshold
         )
+
+    def _get_test_loader(self, triples, true_triples, entities, relations, mode, entities_to_drop):
+        test_dataset = TestDataset(
+            triples=triples, true_triples=true_triples, entities=entities, relations=relations,
+            mode=mode, entities_to_drop=entities_to_drop)
+
+        return data.DataLoader(
+            dataset=test_dataset, batch_size=self.batch_size, num_workers=self.num_workers,
+            collate_fn=TestDataset.collate_fn)
+
+    def get_entity_stream(self, dataset):
+        """Get stream dedicated to link prediction."""
+
+        head_loader = self._get_test_loader(
+            triples=dataset, true_triples=self.true_triples, entities=self.entities,
+            relations=self.relations, mode='head-batch', entities_to_drop=self.entities_to_drop)
+
+        tail_loader = self._get_test_loader(
+            triples=dataset, true_triples=self.true_triples, entities=self.entities,
+            relations=self.relations, mode='tail-batch', entities_to_drop=self.entities_to_drop)
+
+        return [head_loader, tail_loader]
