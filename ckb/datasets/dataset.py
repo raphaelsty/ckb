@@ -81,7 +81,7 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
                 # Exlude entities from candidates such as artificial entities created by the user.
                 if rand_head in self.entities_to_drop:
-                    tmp.append((-1, head))
+                    tmp.append((-1e5, head))
 
                 # Candidate answer:
                 elif (rand_head, relation, tail) not in self.true_triples:
@@ -93,7 +93,7 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
                 # Actual true triple that we filter out:
                 else:
-                    tmp.append((-1, head))
+                    tmp.append((-1e5, head))
 
         elif self.mode == 'tail-batch':
 
@@ -101,7 +101,7 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
                 # Exlude entities from candidates such as artificial entities created by the user.
                 if rand_tail in self.entities_to_drop:
-                    tmp.append((-1, tail))
+                    tmp.append((-1e5, tail))
 
                 # Candidate answer:
                 elif (head, relation, rand_tail) not in self.true_triples:
@@ -113,7 +113,7 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
                 # Actual true triple that we filter out:
                 else:
-                    tmp.append((-1, tail))
+                    tmp.append((-1e5, tail))
 
         tmp = torch.LongTensor(tmp)
 

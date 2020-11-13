@@ -6,6 +6,7 @@ import pandas as pd
 from mkb import datasets as mkb_datasets
 
 from ..utils import filter_entities
+from ..utils import get_same_entities
 from ..utils import read_csv
 
 
@@ -49,7 +50,10 @@ class QSemanlink(mkb_datasets.Dataset):
             Test triples  803
 
         >>> len(dataset.entities_to_drop)
-        1865
+        3101
+
+        >>> len(dataset.same_entities)
+        3101
 
     """
 
@@ -61,8 +65,6 @@ class QSemanlink(mkb_datasets.Dataset):
 
         custom_entities = read_csv(path=f'{path}/questions.csv', sep='|')
 
-        self.entities_to_drop = filter_entities(custom_entities)
-
         super().__init__(
             train=read_csv(path=f'{path}/train.csv',
                            sep='|') + custom_entities,
@@ -71,3 +73,8 @@ class QSemanlink(mkb_datasets.Dataset):
             classification=False, pre_compute=pre_compute, batch_size=batch_size,
             shuffle=shuffle, num_workers=num_workers, seed=seed
         )
+
+        self.entities_to_drop = filter_entities(custom_entities)
+
+        self.same_entities = get_same_entities(
+            dataset=custom_entities, entities=self.entities)

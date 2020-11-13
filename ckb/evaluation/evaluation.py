@@ -7,6 +7,7 @@ import tqdm
 
 from mkb import evaluation as mkb_evaluation
 from mkb import models as mkb_models
+from mkb import utils as mkb_utils
 
 from creme import stats
 
@@ -78,7 +79,7 @@ class Evaluation(mkb_evaluation.Evaluation):
         ... )
 
         >>> validation.eval(model = model, dataset = dataset.valid)
-        {'MRR': 0.5, 'MR': 2.5, 'HITS@1': 0.25, 'HITS@3': 1.0, 'HITS@10': 1.0}
+        {'MRR': 0.4792, 'MR': 2.75, 'HITS@1': 0.25, 'HITS@3': 0.75, 'HITS@10': 1.0}
 
         >>> validation.eval(model = model, dataset = dataset.test)
         {'MRR': 0.375, 'MR': 2.75, 'HITS@1': 0.0, 'HITS@3': 1.0, 'HITS@10': 1.0}
@@ -98,7 +99,7 @@ class Evaluation(mkb_evaluation.Evaluation):
     """
 
     def __init__(self, entities, relations, batch_size, true_triples=[], device='cuda',
-                 num_workers=1, entities_to_drop=[]):
+                 num_workers=1, entities_to_drop=[], same_entities={}):
 
         super().__init__(
             entities=entities,
@@ -118,6 +119,7 @@ class Evaluation(mkb_evaluation.Evaluation):
         }
 
         self.entities_to_drop = [self.entities[e] for e in entities_to_drop]
+        self.same_entities = same_entities
 
     def eval(self, model, dataset):
         """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
@@ -184,3 +186,152 @@ class Evaluation(mkb_evaluation.Evaluation):
             relations=self.relations, mode='tail-batch', entities_to_drop=self.entities_to_drop)
 
         return [head_loader, tail_loader]
+
+    def compute_score(self, model, test_set, metrics, device):
+
+        training = False
+        if model.training:
+            model = model.eval()
+            training = True
+
+        bar = mkb_utils.Bar(dataset=test_set, update_every=1)
+        bar.set_description('Evaluation')
+
+        for data in bar:
+
+            sample = data['sample'].to(device)
+            negative_sample = data['negative_sample'].to(device)
+            filter_bias = data['filter_bias'].to(device)
+            mode = data['mode']
+
+            if mode == 'head-batch' or mode == 'tail-batch':
+
+                score = model(
+                    sample=sample,
+                    negative_sample=negative_sample,
+                    mode=mode
+                )
+
+            elif mode == 'relation-batch':
+
+                score = model(negative_sample)
+
+            score += filter_bias
+
+            argsort = torch.argsort(score, dim=1, descending=True)
+
+            argsort = self.solve_same_entities(argsort=argsort)
+
+            if mode == 'head-batch':
+                positive_arg = sample[:, 0]
+
+            if mode == 'relation-batch':
+                positive_arg = sample[:, 1]
+
+            elif mode == 'tail-batch':
+                positive_arg = sample[:, 2]
+
+            batch_size = sample.size(0)
+
+            for i in range(batch_size):
+                # Notice that argsort is not ranking
+                ranking = torch.nonzero(argsort[i, :] == positive_arg[i])[:1]
+                assert ranking.size(0) == 1
+
+                ranking = 1 + ranking.item()
+
+                # ranking + 1 is the true ranking used in evaluation metrics
+                metrics['MRR'].update(1.0/ranking)
+
+                metrics['MR'].update(ranking)
+
+                metrics['HITS@1'].update(
+                    1.0 if ranking <= 1 else 0.0)
+
+                metrics['HITS@3'].update(
+                    1.0 if ranking <= 3 else 0.0)
+
+                metrics['HITS@10'].update(
+                    1.0 if ranking <= 10 else 0.0)
+
+        if training:
+            model = model.train()
+
+        return metrics
+
+    def compute_detailled_score(self, model, test_set, metrics, types_relations, device):
+
+        training = False
+        if model.training:
+            model = model.eval()
+            training = True
+
+        bar = mkb_utils.Bar(dataset=test_set, update_every=1)
+        bar.set_description('Evaluation')
+
+        for data in bar:
+
+            sample = data['sample'].to(device)
+            negative_sample = data['negative_sample'].to(device)
+            filter_bias = data['filter_bias'].to(device)
+            mode = data['mode']
+
+            score = model(
+                sample=sample,
+                negative_sample=negative_sample,
+                mode=mode,
+            )
+
+            score += filter_bias
+
+            argsort = torch.argsort(score, dim=1, descending=True)
+
+            argsort = self.solve_same_entities(argsort=argsort)
+
+            if mode == 'head-batch':
+                positive_arg = sample[:, 0]
+
+            elif mode == 'tail-batch':
+                positive_arg = sample[:, 2]
+
+            batch_size = sample.size(0)
+
+            for i in range(batch_size):
+                # Notice that argsort is not ranking
+                ranking = torch.nonzero(argsort[i, :] == positive_arg[i])[:1]
+                assert ranking.size(0) == 1
+
+                ranking = 1 + ranking.item()
+
+                type_relation = types_relations[
+                    sample[:, 1][i].item()
+                ]
+
+                # ranking + 1 is the true ranking used in evaluation metrics
+                metrics[mode][type_relation]['MRR'].update(1.0/ranking)
+
+                metrics[mode][type_relation]['MR'].update(ranking)
+
+                metrics[mode][type_relation]['HITS@1'].update(
+                    1.0 if ranking <= 1 else 0.0)
+
+                metrics[mode][type_relation]['HITS@3'].update(
+                    1.0 if ranking <= 3 else 0.0)
+
+                metrics[mode][type_relation]['HITS@10'].update(
+                    1.0 if ranking <= 10 else 0.0)
+
+        if training:
+            model = model.train()
+
+        return metrics
+
+    def solve_same_entities(self, argsort):
+        """Replace artificial entities by the target. Some description may be dedicated to the same
+        entities.
+        """
+        for i, sorted_entities in enumerate(argsort):
+            for j, e in enumerate(sorted_entities):
+                if e.item() in self.same_entities:
+                    argsort[i][j] = self.same_entities[e.item()]
+        return argsort
