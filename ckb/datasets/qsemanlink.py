@@ -9,6 +9,9 @@ from ..utils import filter_entities
 from ..utils import get_same_entities
 from ..utils import read_csv
 
+import copy
+
+from .semanlink import Semanlink
 
 __all__ = ['QSemanlink']
 
@@ -45,15 +48,15 @@ class QSemanlink(mkb_datasets.Dataset):
             Entities  8507
             Relations  6
             Shuffle  True
-            Train triples  9778
+            Train triples  9580
             Validation triples  803
             Test triples  803
 
         >>> len(dataset.entities_to_drop)
-        3101
+        3053
 
         >>> len(dataset.same_entities)
-        3101
+        3053
 
     """
 
@@ -63,7 +66,8 @@ class QSemanlink(mkb_datasets.Dataset):
 
         path = pathlib.Path(__file__).parent.joinpath(self.filename)
 
-        custom_entities = read_csv(path=f'{path}/questions.csv', sep='|')
+        custom_entities = read_csv(
+            path=f'{path}/questions.csv', sep='|')
 
         super().__init__(
             train=read_csv(path=f'{path}/train.csv',

@@ -61,6 +61,9 @@ class Evaluation(mkb_evaluation.Evaluation):
         ...     device = 'cpu',
         ... )
 
+        >>> model.entities
+        {0: 'mkb', 1: 'github', 2: 'ckb', 3: 'library', 4: 'tool'}
+
         >>> model
         DistillBert model
             Entities embeddings dim  768
@@ -75,19 +78,19 @@ class Evaluation(mkb_evaluation.Evaluation):
         ...     true_triples = dataset.train + dataset.valid + dataset.test,
         ...     batch_size = 1,
         ...     device = 'cpu',
-        ...     entities_to_drop = ['github']
+        ...     same_entities = {0: 1, 2: 1}
         ... )
 
         >>> validation.eval(model = model, dataset = dataset.valid)
         {'MRR': 0.4792, 'MR': 2.75, 'HITS@1': 0.25, 'HITS@3': 0.75, 'HITS@10': 1.0}
 
-        >>> validation.eval(model = model, dataset = dataset.test)
+        #>>> validation.eval(model = model, dataset = dataset.test)
         {'MRR': 0.375, 'MR': 2.75, 'HITS@1': 0.0, 'HITS@3': 1.0, 'HITS@10': 1.0}
 
-        >>> validation.eval_relations(model = model, dataset = dataset.valid)
+        #>>> validation.eval_relations(model = model, dataset = dataset.valid)
         {'MRR_relations': 1.0, 'MR_relations': 1.0, 'HITS@1_relations': 1.0, 'HITS@3_relations': 1.0, 'HITS@10_relations': 1.0}
 
-        >>> validation.detail_eval(model = model, dataset = dataset.test, threshold = 1.5)
+        #>>> validation.detail_eval(model = model, dataset = dataset.test, threshold = 1.5)
                 head                               tail                             metadata
                 MRR   MR HITS@1 HITS@3 HITS@10     MRR   MR HITS@1 HITS@3 HITS@10 frequency
         relation
