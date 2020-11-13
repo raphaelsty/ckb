@@ -48,6 +48,9 @@ class QSemanlink(mkb_datasets.Dataset):
             Validation triples  803
             Test triples  803
 
+        >>> len(dataset.entities_to_drop)
+        1865
+
     """
 
     def __init__(self, batch_size, shuffle=True, pre_compute=True, num_workers=1, seed=None):
