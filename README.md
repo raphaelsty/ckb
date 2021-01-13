@@ -2,7 +2,7 @@
 Contextual knowledge bases.
 
 
-This is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496)  which is mainly an ablation study of [KEPLER: A Unified Model for Knowledge Embedding and Pre-trained Language Representation](https://arxiv.org/abs/1911.06136). This tool is based on the library [MKB](https://github.com/raphaelsty/mkb). CKB is designed to be compatible with HuggingFace's models.
+This is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496) which is mainly an ablation study of [KEPLER: A Unified Model for Knowledge Embedding and Pre-trained Language Representation](https://arxiv.org/abs/1911.06136). This tool is based on the library [MKB](https://github.com/raphaelsty/mkb). CKB is designed to be compatible with HuggingFace's models.
 
 
 ## Installation
@@ -130,7 +130,7 @@ embeddings = {}
 
 for e in new_entities:
     with torch.no_grad():
-        embeddings[e] = model.encoder(new_entities).cpu()
+        embeddings[e] = model.encoder([e]).cpu()
 ```
 
 ## Save trained model:
