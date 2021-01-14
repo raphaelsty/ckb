@@ -21,7 +21,9 @@ setuptools.setup(
     install_requires=required + ['mkb>=0.0.1'],
     package_data={
         'ckb': [
-            'datasets/semanlink/*.csv'
+            'datasets/semanlink/*.csv',
+            'datasets/wn18rr/*.csv',
+            'datasets/fb15k237/*.csv',
         ]
     },
     classifiers=[
