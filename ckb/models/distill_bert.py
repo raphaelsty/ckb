@@ -34,6 +34,7 @@ class DistillBert(BaseModel):
         >>> dataset = datasets.Semanlink(1)
 
         >>> model = models.DistillBert(
+        ...    hidden_dim = 50,
         ...    entities = dataset.entities,
         ...    relations = dataset.relations,
         ...    gamma = 9,
@@ -42,36 +43,36 @@ class DistillBert(BaseModel):
 
         >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
         >>> model(sample)
-        tensor([[3.6489],
-                [3.5267]], grad_fn=<ViewBackward>)
+        tensor([[3.1645],
+                [3.2653]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
         >>> model(sample)
-        tensor([[-139.6389],
-                [-144.1577]], grad_fn=<ViewBackward>)
+        tensor([[2.5616],
+                [0.8435]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
         >>> model(sample)
-        tensor([[-139.5234],
-                [-144.4902]], grad_fn=<ViewBackward>)
+        tensor([[1.1692],
+                [1.1021]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
         >>> negative_sample = torch.tensor([[1], [1]])
 
         >>> model(sample, negative_sample, mode='head-batch')
-        tensor([[-139.5234],
-                [-144.4902]], grad_fn=<ViewBackward>)
+        tensor([[1.1692],
+                [1.1021]], grad_fn=<ViewBackward>)
 
         >>> model(sample, negative_sample, mode='tail-batch')
-        tensor([[-139.6389],
-                [-144.1577]], grad_fn=<ViewBackward>)
+        tensor([[2.5616],
+                [0.8435]], grad_fn=<ViewBackward>)
 
     """
 
-    def __init__(self, entities, relations, scoring=TransE(), gamma=9, device='cuda'):
-
+    def __init__(self,  hidden_dim, entities, relations, scoring=TransE(), gamma=9, device='cuda'):
+        
         super(DistillBert, self).__init__(
-            hidden_dim=768,
+            hidden_dim=hidden_dim,
             entities=entities,
             relations=relations,
             scoring=scoring,
@@ -88,6 +89,8 @@ class DistillBert(BaseModel):
         self.device = device
 
         self.l1 = transformers.DistilBertModel.from_pretrained(self.model_name)
+        
+        self.l2 = torch.nn.Linear(768, hidden_dim)
 
     def encoder(self, e):
         """Encode input entities descriptions.
@@ -117,4 +120,4 @@ class DistillBert(BaseModel):
 
         pooler = hidden_state[:, 0]
 
-        return pooler
+        return self.l2(pooler)
