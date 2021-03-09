@@ -55,6 +55,7 @@ test = [
 
 # Initialize the dataset, batch size should be small to avoid RAM exceed. 
 dataset = datasets.Dataset(
+    hidden_dim = 500,
     batch_size = 1,
     train = train,
     valid = valid,
