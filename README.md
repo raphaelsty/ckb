@@ -13,7 +13,7 @@ There is only one model available for the moment "Distillbert". It is relatively
 ## Installation
 
 ```
-!pip install git+https://github.com/raphaelsty/ckb
+pip install git+https://github.com/raphaelsty/ckb
 ```
 
 ## Train your own model:
