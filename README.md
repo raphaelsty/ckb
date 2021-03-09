@@ -8,7 +8,7 @@ This is an informal implementation of the model focusing on the link prediction 
 ## Installation
 
 ```
-!pip install git+https://username:password@github.com/raphaelsty/ckb
+!pip install git+https://github.com/raphaelsty/ckb
 ```
 
 ## Train your own model:
