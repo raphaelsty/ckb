@@ -5,6 +5,11 @@ Contextual knowledge bases.
 This is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496) which is mainly an ablation study of [KEPLER: A Unified Model for Knowledge Embedding and Pre-trained Language Representation](https://arxiv.org/abs/1911.06136). This tool is based on the library [MKB](https://github.com/raphaelsty/mkb). CKB is designed to be compatible with HuggingFace's models.
 
 
+The CKB library is dedicated to knowledge bases and allows to fine-tune HuggingFace models using the link prediction task. The link prediction task aims to train a model to find the missing element of an RDF triplet. For the triplet `(France, is_part_of, ?)`, the model may find the entity `Europe`. This library replaces the embeddings traditionally used with models dedicated to knowledge graphs by an encoder (TransE vs BERT). Here the encoder is a pre-trained transformer. Using a transformer has many advantages such as building contextualized latent representations of entities. Moreover this model can encode entities it has never seen with the textual description of the entity. The training time is much longer than a classic TransE model, however the model converges with fewer epochs.
+
+There is only one model available for the moment "Distillbert". It is relatively easy to integrate a new model from HuggingFace. Do not hesitate to open an issue if you need one.
+
+
 ## Installation
 
 ```
@@ -97,12 +102,12 @@ pipeline = compose.Pipeline(
 )
 
 pipeline = pipeline.learn(
-    model      = model,
-    dataset    = dataset,
+    model = model,
+    dataset = dataset,
     evaluation = evaluation,
-    sampling   = sampling,
-    optimizer  = optimizer,
-    loss       = losses.Adversarial(alpha=0.5),
+    sampling = sampling,
+    optimizer = optimizer,
+    loss = losses.Adversarial(alpha=0.5),
 )
 ```
 
