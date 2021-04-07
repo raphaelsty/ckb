@@ -6,10 +6,10 @@ import transformers
 from ..scoring import RotatE, TransE
 from .base import BaseModel
 
-__all__ = ["DistillBert"]
+__all__ = ["FlauBERT"]
 
 
-class DistillBert(BaseModel):
+class FlauBERT(BaseModel):
     """DistillBert for contextual representation of entities.
 
     Parameters:
@@ -29,7 +29,7 @@ class DistillBert(BaseModel):
 
         >>> dataset = datasets.Semanlink(1)
 
-        >>> model = models.DistillBert(
+        >>> model = models.FlauBERT(
         ...    hidden_dim = 50,
         ...    entities = dataset.entities,
         ...    relations = dataset.relations,
@@ -44,24 +44,24 @@ class DistillBert(BaseModel):
 
         >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
         >>> model(sample)
-        tensor([[2.5616],
-                [0.8435]], grad_fn=<ViewBackward>)
+        tensor([[-18.9375],
+                [-30.7415]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
         >>> model(sample)
-        tensor([[1.1692],
-                [1.1021]], grad_fn=<ViewBackward>)
+        tensor([[-18.8297],
+                [-31.3300]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
         >>> negative_sample = torch.tensor([[1], [1]])
 
         >>> model(sample, negative_sample, mode='head-batch')
-        tensor([[1.1692],
-                [1.1021]], grad_fn=<ViewBackward>)
+        tensor([[-18.8297],
+                [-31.3300]], grad_fn=<ViewBackward>)
 
         >>> model(sample, negative_sample, mode='tail-batch')
-        tensor([[2.5616],
-                [0.8435]], grad_fn=<ViewBackward>)
+        tensor([[-18.9375],
+                [-30.7415]], grad_fn=<ViewBackward>)
 
     """
 
@@ -69,7 +69,7 @@ class DistillBert(BaseModel):
         self, hidden_dim, entities, relations, scoring=TransE(), gamma=9, device="cuda"
     ):
 
-        super(DistillBert, self).__init__(
+        super(FlauBERT, self).__init__(
             hidden_dim=hidden_dim,
             entities=entities,
             relations=relations,
@@ -77,9 +77,9 @@ class DistillBert(BaseModel):
             gamma=gamma,
         )
 
-        self.model_name = "distilbert-base-uncased"
+        self.model_name = "flaubert/flaubert_base_cased"
 
-        self.tokenizer = transformers.DistilBertTokenizer.from_pretrained(
+        self.tokenizer = transformers.FlaubertTokenizer.from_pretrained(
             self.model_name
         )
 
@@ -87,7 +87,7 @@ class DistillBert(BaseModel):
 
         self.device = device
 
-        self.l1 = transformers.DistilBertModel.from_pretrained(self.model_name)
+        self.l1 = transformers.FlaubertModel.from_pretrained(self.model_name)
 
         self.l2 = torch.nn.Linear(768, hidden_dim)
 
