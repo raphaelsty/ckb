@@ -10,7 +10,7 @@ __all__ = ["FlauBERT"]
 
 
 class FlauBERT(BaseModel):
-    """DistillBert for contextual representation of entities.
+    """FlauBERT for contextual representation of entities.
 
     Parameters:
         gamma (int): A higher gamma parameter increases the upper and lower bounds of the latent
