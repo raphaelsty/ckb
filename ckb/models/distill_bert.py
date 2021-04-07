@@ -72,7 +72,9 @@ class DistillBert(BaseModel):
         if hidden_dim is not None:
             self.l2 = torch.nn.Linear(768, hidden_dim)
         else:
+            self.l2 = None
             hidden_dim = 768
+
 
         super(DistillBert, self).__init__(
             hidden_dim=hidden_dim,
@@ -121,7 +123,7 @@ class DistillBert(BaseModel):
 
         pooler = hidden_state[:, 0]
 
-        if self.hidden_dim is not None:
+        if self.l2 is not None:
             pooler = self.l2(pooler)
 
         return pooler
