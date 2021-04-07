@@ -69,7 +69,7 @@ class DistillBert(BaseModel):
         self, entities, relations, scoring=TransE(), hidden_dim=None, gamma=9, device="cuda"
     ):
 
-        if self.hidden_dim is not None:
+        if hidden_dim is not None:
             self.l2 = torch.nn.Linear(768, hidden_dim)
         else:
             hidden_dim = 768
