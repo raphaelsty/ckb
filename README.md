@@ -7,7 +7,7 @@ This is an informal implementation of the model focusing on the link prediction 
 
 The CKB library is dedicated to knowledge bases and allows to fine-tune HuggingFace models using the link prediction task. The objective of this fine-tuning task is to make accurate embeddings of knowledge graph entities. The link prediction task aims to train a model to find the missing element of an RDF triplet. For the triplet `(France, is_part_of, ?)`, the model may find the entity `Europe`. This library replaces the embeddings traditionally used with models dedicated to knowledge graphs by an encoder (TransE vs BERT). Here the encoder is a pre-trained transformer. Using a transformer has many advantages such as building contextualized latent representations of entities. Moreover this model can encode entities it has never seen with the textual description of the entity. The training time is much longer than a classic TransE model, however the model converges with fewer epochs.
 
-There is only one model available for the moment "Distillbert". It is relatively easy to integrate a new model from HuggingFace. Do not hesitate to open an issue if you need to.
+There is only two models available for the moment "Distillbert" and "FlauBERT". It is relatively easy to integrate a new model from HuggingFace. Do not hesitate to open an issue if you need to.
 
 
 ## Installation
@@ -63,7 +63,6 @@ dataset = datasets.Dataset(
 )
 
 model = models.DistillBert(
-    hidden_dim = 500,
     entities = dataset.entities,
     relations = dataset.relations,
     gamma = 9,
