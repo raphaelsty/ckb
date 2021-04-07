@@ -91,6 +91,8 @@ class DistillBert(BaseModel):
 
         if self.hidden_dim is not None:
             self.l2 = torch.nn.Linear(768, hidden_dim)
+        else:
+            self.hidden_dim = 768
 
     def encoder(self, e):
         """Encode input entities descriptions.
@@ -121,5 +123,5 @@ class DistillBert(BaseModel):
 
         if self.hidden_dim is not None:
             pooler = self.l2(pooler)
-            
+
         return pooler
