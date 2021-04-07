@@ -69,6 +69,12 @@ class FlauBERT(BaseModel):
         self, entities, relations, scoring=TransE(),  hidden_dim=None, gamma=9, device="cuda"
     ):
 
+        if self.hidden_dim is not None:
+            self.l2 = torch.nn.Linear(768, hidden_dim)
+        else:
+            hidden_dim = 768
+
+
         super(FlauBERT, self).__init__(
             hidden_dim=hidden_dim,
             entities=entities,
@@ -89,10 +95,6 @@ class FlauBERT(BaseModel):
 
         self.l1 = transformers.FlaubertModel.from_pretrained(self.model_name)
 
-        if self.hidden_dim is not None:
-            self.l2 = torch.nn.Linear(768, hidden_dim)
-        else:
-            self.hidden_dim = 768
 
     def encoder(self, e):
         """Encode input entities descriptions.
