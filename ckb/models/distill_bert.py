@@ -66,7 +66,7 @@ class DistillBert(BaseModel):
     """
 
     def __init__(
-        self, hidden_dim, entities, relations, scoring=TransE(), gamma=9, device="cuda"
+        self, entities, relations, scoring=TransE(), hidden_dim=None, gamma=9, device="cuda"
     ):
 
         super(DistillBert, self).__init__(
@@ -89,7 +89,8 @@ class DistillBert(BaseModel):
 
         self.l1 = transformers.DistilBertModel.from_pretrained(self.model_name)
 
-        self.l2 = torch.nn.Linear(768, hidden_dim)
+        if self.hidden_dim is not None:
+            self.l2 = torch.nn.Linear(768, hidden_dim)
 
     def encoder(self, e):
         """Encode input entities descriptions.
@@ -118,4 +119,7 @@ class DistillBert(BaseModel):
 
         pooler = hidden_state[:, 0]
 
-        return self.l2(pooler)
+        if self.hidden_dim is not None:
+            pooler = self.l2(pooler)
+            
+        return pooler
