@@ -63,17 +63,29 @@ class DistillBert(BaseModel):
         tensor([[2.5616],
                 [0.8435]], grad_fn=<ViewBackward>)
 
+        >>> model = models.DistillBert(
+        ...    entities = dataset.entities,
+        ...    relations = dataset.relations,
+        ...    gamma = 9,
+        ...    device = 'cpu',
+        ... )
+
+        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+        >>> model(sample)
+        tensor([[3.6504],
+                [3.3879]], grad_fn=<ViewBackward>)
+
     """
 
     def __init__(
         self, entities, relations, scoring=TransE(), hidden_dim=None, gamma=9, device="cuda"
     ):
 
-        if hidden_dim is not None:
-            self.l2 = torch.nn.Linear(768, hidden_dim)
-        else:
-            self.l2 = None
+        if hidden_dim is None:
             hidden_dim = 768
+            init_l2 = False
+        else:
+            init_l2 = True
 
 
         super(DistillBert, self).__init__(
@@ -95,6 +107,11 @@ class DistillBert(BaseModel):
         self.device = device
 
         self.l1 = transformers.DistilBertModel.from_pretrained(self.model_name)
+
+        if init_l2:
+            self.l2 = torch.nn.Linear(768, hidden_dim)
+        else:
+            self.l2 = None
 
     def encoder(self, e):
         """Encode input entities descriptions.

@@ -44,36 +44,47 @@ class FlauBERT(BaseModel):
 
         >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
         >>> model(sample)
-        tensor([[-18.9375],
-                [-30.7415]], grad_fn=<ViewBackward>)
+        tensor([[-25.7671],
+                [-15.1038]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
         >>> model(sample)
-        tensor([[-18.8297],
-                [-31.3300]], grad_fn=<ViewBackward>)
+        tensor([[-24.8325],
+                [-14.1621]], grad_fn=<ViewBackward>)
 
         >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
         >>> negative_sample = torch.tensor([[1], [1]])
 
         >>> model(sample, negative_sample, mode='head-batch')
-        tensor([[-18.8297],
-                [-31.3300]], grad_fn=<ViewBackward>)
+        tensor([[-24.8325],
+                [-14.1621]], grad_fn=<ViewBackward>)
 
         >>> model(sample, negative_sample, mode='tail-batch')
-        tensor([[-18.9375],
-                [-30.7415]], grad_fn=<ViewBackward>)
+        tensor([[-25.7670],
+                [-15.1038]], grad_fn=<ViewBackward>)
+
+        >>> model = models.FlauBERT(
+        ...    entities = dataset.entities,
+        ...    relations = dataset.relations,
+        ...    gamma = 9,
+        ...    device = 'cpu',
+        ... )
+
+        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+        >>> model(sample)
+        tensor([[3.6564],
+                [3.5718]], grad_fn=<ViewBackward>)
 
     """
 
     def __init__(
         self, entities, relations, scoring=TransE(),  hidden_dim=None, gamma=9, device="cuda"
     ):
-
-        if hidden_dim is not None:
-            self.l2 = torch.nn.Linear(768, hidden_dim)
-        else:
-            self.l2 = None
+        if hidden_dim is None:
             hidden_dim = 768
+            init_l2 = False
+        else:
+            init_l2 = True
 
         super(FlauBERT, self).__init__(
             hidden_dim=hidden_dim,
@@ -83,7 +94,7 @@ class FlauBERT(BaseModel):
             gamma=gamma,
         )
 
-        self.model_name = "flaubert/flaubert_base_cased"
+        self.model_name = "flaubert/flaubert_base_uncased"
 
         self.tokenizer = transformers.FlaubertTokenizer.from_pretrained(
             self.model_name
@@ -94,6 +105,11 @@ class FlauBERT(BaseModel):
         self.device = device
 
         self.l1 = transformers.FlaubertModel.from_pretrained(self.model_name)
+
+        if init_l2:
+            self.l2 = torch.nn.Linear(768, hidden_dim)
+        else:
+            self.l2 = None
 
 
     def encoder(self, e):
