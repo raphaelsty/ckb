@@ -34,11 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install git+git://github.com/psf/black
-          pip install -e ".[compat,dev]" codecov
-      - name: Cache datasets
-        uses: actions/cache@v2
-        with:
-          key: ${{ runner.os }}
+          pip install -e . codecov
           
       - name: pytest
         run: pytest --cov=ckb
