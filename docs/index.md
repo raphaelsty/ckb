@@ -63,13 +63,11 @@ dataset = datasets.Dataset(
     seed = 42,
 )
 
-model = models.Transformer(
-    model = BertModel.from_pretrained('bert-base-uncased'),
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased'),
+model = models.DistillBert(
     entities = dataset.entities,
     relations = dataset.relations,
     gamma = 9,
-    scoring = scoring.TransE(),
+    scoring = scoring.TransE(), # Scoring function. TransE is suitable.
     device = device,
 )
 
