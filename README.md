@@ -1,6 +1,10 @@
 <p align=center>Contextual Knowledge Bases</p>
 
+
 ---
+
+[![ci](https://github.com/raphaelsty/ckb/actions/workflows/ci.yml/badge.svg)](https://github.com/raphaelsty/ckb/actions/workflows/ci.yml)
+
 
 
 This is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496) which is mainly an ablation study of [KEPLER: A Unified Model for Knowledge Embedding and Pre-trained Language Representation](https://arxiv.org/abs/1911.06136). This tool is based on the library [MKB](https://github.com/raphaelsty/mkb). CKB is designed to be compatible with HuggingFace's models.
