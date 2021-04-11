@@ -43,14 +43,13 @@ class NegativeSampling(mkb_sampling.NegativeSampling):
     ...    seed = 42,
     ... )
 
-    >>> for data in dataset:
-    ...     sample, weight, mode = data['sample'], data['weight'], data['mode']
-    ...     break
+    >>> data = next(dataset)
+    >>> sample, weight, mode = data['sample'], data['weight'], data['mode']
 
     >>> negative_sample = negative_sampling.generate(sample, mode='tail-batch')
 
     >>> mode
-    'head-batch'
+    'tail-batch'
 
     >>> sample
     tensor([[0, 0, 4],
