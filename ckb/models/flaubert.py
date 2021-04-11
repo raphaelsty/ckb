@@ -12,73 +12,81 @@ __all__ = ["FlauBERT"]
 class FlauBERT(BaseModel):
     """FlauBERT for contextual representation of entities.
 
-    Parameters:
+    Parameters
+    ----------
         gamma (int): A higher gamma parameter increases the upper and lower bounds of the latent
             space and vice-versa.
         entities (dict): Mapping between entities id and entities label.
         relations (dict): Mapping between relations id and entities label.
 
-    Example:
+    Examples
+    --------
 
-        >>> from ckb import models
-        >>> from ckb import datasets
+    >>> from ckb import models
+    >>> from ckb import datasets
 
-        >>> import torch
+    >>> import torch
 
-        >>> _ = torch.manual_seed(42)
+    >>> _ = torch.manual_seed(42)
 
-        >>> dataset = datasets.Semanlink(1)
+    >>> dataset = datasets.Semanlink(1)
 
-        >>> model = models.FlauBERT(
-        ...    hidden_dim = 50,
-        ...    entities = dataset.entities,
-        ...    relations = dataset.relations,
-        ...    gamma = 9,
-        ...    device = 'cpu',
-        ... )
+    >>> model = models.FlauBERT(
+    ...    hidden_dim = 50,
+    ...    entities = dataset.entities,
+    ...    relations = dataset.relations,
+    ...    gamma = 9,
+    ...    device = 'cpu',
+    ... )
 
-        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-        >>> model(sample)
-        tensor([[3.1645],
-                [3.2653]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+    >>> model(sample)
+    tensor([[3.1645],
+            [3.2653]], grad_fn=<ViewBackward>)
 
-        >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
-        >>> model(sample)
-        tensor([[-25.7671],
-                [-15.1038]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
+    >>> model(sample)
+    tensor([[-25.7671],
+            [-15.1038]], grad_fn=<ViewBackward>)
 
-        >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
-        >>> model(sample)
-        tensor([[-24.8325],
-                [-14.1621]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
+    >>> model(sample)
+    tensor([[-24.8325],
+            [-14.1621]], grad_fn=<ViewBackward>)
 
-        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-        >>> negative_sample = torch.tensor([[1], [1]])
+    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+    >>> negative_sample = torch.tensor([[1], [1]])
 
-        >>> model(sample, negative_sample, mode='head-batch')
-        tensor([[-24.8325],
-                [-14.1621]], grad_fn=<ViewBackward>)
+    >>> model(sample, negative_sample, mode='head-batch')
+    tensor([[-24.8325],
+            [-14.1621]], grad_fn=<ViewBackward>)
 
-        >>> model(sample, negative_sample, mode='tail-batch')
-        tensor([[-25.7670],
-                [-15.1038]], grad_fn=<ViewBackward>)
+    >>> model(sample, negative_sample, mode='tail-batch')
+    tensor([[-25.7670],
+            [-15.1038]], grad_fn=<ViewBackward>)
 
-        >>> model = models.FlauBERT(
-        ...    entities = dataset.entities,
-        ...    relations = dataset.relations,
-        ...    gamma = 9,
-        ...    device = 'cpu',
-        ... )
+    >>> model = models.FlauBERT(
+    ...    entities = dataset.entities,
+    ...    relations = dataset.relations,
+    ...    gamma = 9,
+    ...    device = 'cpu',
+    ... )
 
-        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-        >>> model(sample)
-        tensor([[3.6564],
-                [3.5718]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+    >>> model(sample)
+    tensor([[3.6564],
+            [3.5718]], grad_fn=<ViewBackward>)
 
     """
 
     def __init__(
-        self, entities, relations, scoring=TransE(),  hidden_dim=None, gamma=9, device="cuda"
+        self,
+        entities,
+        relations,
+        scoring=TransE(),
+        hidden_dim=None,
+        gamma=9,
+        device="cuda",
     ):
         if hidden_dim is None:
             hidden_dim = 768
@@ -96,9 +104,7 @@ class FlauBERT(BaseModel):
 
         self.model_name = "flaubert/flaubert_base_uncased"
 
-        self.tokenizer = transformers.FlaubertTokenizer.from_pretrained(
-            self.model_name
-        )
+        self.tokenizer = transformers.FlaubertTokenizer.from_pretrained(self.model_name)
 
         self.max_length = self.tokenizer.max_model_input_sizes[self.model_name]
 
@@ -110,7 +116,6 @@ class FlauBERT(BaseModel):
             self.l2 = torch.nn.Linear(768, hidden_dim)
         else:
             self.l2 = None
-
 
     def encoder(self, e):
         """Encode input entities descriptions.

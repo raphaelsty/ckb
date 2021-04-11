@@ -7,41 +7,42 @@ import mkb.models as mkb_models
 from ..scoring import RotatE
 
 
-__all__ = ['BaseModel']
+__all__ = ["BaseModel"]
 
 
 class BaseModel(mkb_models.base.BaseModel):
     """Base model class.
 
-    Example:
+    Examples
+    --------
 
-        >>> from ckb import models
-        >>> from ckb import scoring
-        >>> from mkb import datasets as mkb_datasets
+    >>> from ckb import models
+    >>> from ckb import scoring
+    >>> from mkb import datasets as mkb_datasets
 
-        >>> import torch
+    >>> import torch
 
-        >>> _ = torch.manual_seed(42)
+    >>> _ = torch.manual_seed(42)
 
-        >>> dataset = mkb_datasets.CountriesS1(1)
+    >>> dataset = mkb_datasets.CountriesS1(1)
 
-        >>> model = models.BaseModel(
-        ...     entities = dataset.entities,
-        ...     relations=dataset.relations,
-        ...     hidden_dim=3,
-        ...     gamma=3,
-        ...     scoring=scoring.TransE(),
-        ... )
+    >>> model = models.BaseModel(
+    ...     entities = dataset.entities,
+    ...     relations=dataset.relations,
+    ...     hidden_dim=3,
+    ...     gamma=3,
+    ...     scoring=scoring.TransE(),
+    ... )
 
-        >>> sample = torch.tensor([[3, 0, 4], [5, 1, 6]])
+    >>> sample = torch.tensor([[3, 0, 4], [5, 1, 6]])
 
-        >>> head, relation, tail, shape = model.batch(sample)
+    >>> head, relation, tail, shape = model.batch(sample)
 
-        >>> head
-        ['belize', 'falkland_islands']
+    >>> head
+    ['belize', 'falkland_islands']
 
-        >>> tail
-        ['morocco', 'saint_vincent_and_the_grenadines']
+    >>> tail
+    ['morocco', 'saint_vincent_and_the_grenadines']
 
     """
 
@@ -54,8 +55,12 @@ class BaseModel(mkb_models.base.BaseModel):
             relation_dim = relation_dim // 2
 
         super().__init__(
-            entities=entities, relations=relations, hidden_dim=hidden_dim, entity_dim=entity_dim,
-            relation_dim=relation_dim, gamma=gamma,
+            entities=entities,
+            relations=relations,
+            hidden_dim=hidden_dim,
+            entity_dim=entity_dim,
+            relation_dim=relation_dim,
+            gamma=gamma,
         )
 
         self.scoring = scoring
@@ -69,50 +74,43 @@ class BaseModel(mkb_models.base.BaseModel):
         self.entity_dim = entity_dim
         self.relation_dim = relation_dim
 
-        self.gamma = nn.Parameter(
-            torch.Tensor([gamma]),
-            requires_grad=False
-        )
+        self.gamma = nn.Parameter(torch.Tensor([gamma]), requires_grad=False)
 
         self.epsilon = 2
 
         self.embedding_range = nn.Parameter(
-            torch.Tensor(
-                [(self.gamma.item() + self.epsilon) / self.hidden_dim]),
-            requires_grad=False
+            torch.Tensor([(self.gamma.item() + self.epsilon) / self.hidden_dim]),
+            requires_grad=False,
         )
 
         self.relation_embedding = nn.Parameter(
-            torch.zeros(self.n_relation, self.relation_dim))
+            torch.zeros(self.n_relation, self.relation_dim)
+        )
 
         nn.init.uniform_(
             tensor=self.relation_embedding,
             a=-self.embedding_range.item(),
-            b=self.embedding_range.item()
+            b=self.embedding_range.item(),
         )
 
-        self.modulus = nn.Parameter(
-            torch.Tensor([[0.5 * self.embedding_range.item()]])
-        )
+        self.modulus = nn.Parameter(torch.Tensor([[0.5 * self.embedding_range.item()]]))
 
     def forward(self, sample, negative_sample=None, mode=None):
         """Compute scores of input sample, negative sample with respect to the mode."""
 
         head, relation, tail, shape = self.encode(
-            sample=sample,
-            negative_sample=negative_sample,
-            mode=mode
+            sample=sample, negative_sample=negative_sample, mode=mode
         )
 
         score = self.scoring(
             **{
-                'head': head,
-                'relation': relation,
-                'tail': tail,
-                'gamma': self.gamma,
-                'mode': mode,
-                'embedding_range': self.embedding_range,
-                'modulus': self.modulus,
+                "head": head,
+                "relation": relation,
+                "tail": tail,
+                "gamma": self.gamma,
+                "mode": mode,
+                "embedding_range": self.embedding_range,
+                "modulus": self.modulus,
             }
         )
 
@@ -122,9 +120,7 @@ class BaseModel(mkb_models.base.BaseModel):
         """Encode input sample, negative sample with respect to the mode."""
 
         head, relation, tail, shape = self.batch(
-            sample=sample,
-            negative_sample=negative_sample,
-            mode=mode
+            sample=sample, negative_sample=negative_sample, mode=mode
         )
 
         if negative_sample is None:
@@ -135,21 +131,23 @@ class BaseModel(mkb_models.base.BaseModel):
         else:
 
             head, tail = self.negative_encoding(
-                sample=sample, head=head, tail=tail, negative_sample=negative_sample, mode=mode)
+                sample=sample,
+                head=head,
+                tail=tail,
+                negative_sample=negative_sample,
+                mode=mode,
+            )
 
         return head, relation, tail, shape
 
     def batch(self, sample, negative_sample=None, mode=None):
         """Process input sample."""
         sample, shape = self.format_sample(
-            sample=sample,
-            negative_sample=negative_sample
+            sample=sample, negative_sample=negative_sample
         )
 
         relation = torch.index_select(
-            self.relation_embedding,
-            dim=0,
-            index=sample[:, 1]
+            self.relation_embedding, dim=0, index=sample[:, 1]
         ).unsqueeze(1)
 
         head = sample[:, 0]
@@ -162,18 +160,20 @@ class BaseModel(mkb_models.base.BaseModel):
 
     def negative_encoding(self, sample, head, tail, negative_sample, mode):
 
-        negative_sample = torch.stack([
-            self.encoder([self.entities[e.item()] for e in ns])
-            for ns in negative_sample]
+        negative_sample = torch.stack(
+            [
+                self.encoder([self.entities[e.item()] for e in ns])
+                for ns in negative_sample
+            ]
         )
 
-        if mode == 'head-batch':
+        if mode == "head-batch":
 
             head = negative_sample
 
             tail = self.encoder(e=tail).unsqueeze(1)
 
-        elif mode == 'tail-batch':
+        elif mode == "tail-batch":
 
             tail = negative_sample
 

@@ -2,18 +2,19 @@ from .base import Scoring
 
 import torch
 
-__all__ = ['TransE']
+__all__ = ["TransE"]
 
 
 class TransE(Scoring):
     """TransE scoring function.
 
-    Example:
+    Examples
+    --------
 
-        >>> from ckb import scoring
+    >>> from ckb import scoring
 
-        >>> scoring.TransE()
-        TransE scoring
+    >>> scoring.TransE()
+    TransE scoring
 
     """
 
@@ -21,8 +22,17 @@ class TransE(Scoring):
         super().__init__()
 
     def __call__(self, head, relation, tail, gamma, mode, **kwargs):
+        """Compute the score of given facts (heads, relations, tails).
 
-        if mode == 'head-batch':
+        Parameters
+        ----------
+            head: Embeddings of heads.
+            relation: Embeddings of relations.
+            tail: Embeddings of tails.
+            mode: head-batch or tail-batch.
+
+        """
+        if mode == "head-batch":
 
             score = head + (relation - tail)
 

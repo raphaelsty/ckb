@@ -4,55 +4,58 @@ from math import pi
 
 import torch
 
-__all__ = ['pRotatE']
+__all__ = ["pRotatE"]
 
 
 class pRotatE(Scoring):
     """pRotatE scoring function.
 
-        >>> from ckb import models
-        >>> from ckb import datasets
-        >>> from ckb import scoring
+    Examples
+    --------
 
-        >>> import torch
+    >>> from ckb import models
+    >>> from ckb import datasets
+    >>> from ckb import scoring
 
-        >>> _ = torch.manual_seed(42)
+    >>> import torch
 
-        >>> dataset = datasets.Semanlink(1)
+    >>> _ = torch.manual_seed(42)
 
-        >>> model = models.DistillBert(
-        ...    entities = dataset.entities,
-        ...    relations = dataset.relations,
-        ...    gamma = 9,
-        ...    device = 'cpu',
-        ...    scoring = scoring.pRotatE(),
-        ... )
+    >>> dataset = datasets.Semanlink(1)
 
-        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-        >>> model(sample)
-        tensor([[5.4199],
-                [5.4798]], grad_fn=<ViewBackward>)
+    >>> model = models.DistillBert(
+    ...    entities = dataset.entities,
+    ...    relations = dataset.relations,
+    ...    gamma = 9,
+    ...    device = 'cpu',
+    ...    scoring = scoring.pRotatE(),
+    ... )
 
-        >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
-        >>> model(sample)
-        tensor([[5.4521],
-                [5.5248]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+    >>> model(sample)
+    tensor([[5.4199],
+            [5.4798]], grad_fn=<ViewBackward>)
 
-        >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
-        >>> model(sample)
-        tensor([[5.4962],
-                [5.5059]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
+    >>> model(sample)
+    tensor([[5.4521],
+            [5.5248]], grad_fn=<ViewBackward>)
 
-        >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-        >>> negative_sample = torch.tensor([[1, 0], [1, 2]])
+    >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
+    >>> model(sample)
+    tensor([[5.4962],
+            [5.5059]], grad_fn=<ViewBackward>)
 
-        >>> model(sample, negative_sample, mode='head-batch')
-        tensor([[5.4962, 5.4199],
-                [5.5059, 5.4798]], grad_fn=<ViewBackward>)
+    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
+    >>> negative_sample = torch.tensor([[1, 0], [1, 2]])
 
-        >>> model(sample, negative_sample, mode='tail-batch')
-        tensor([[5.4521, 5.4199],
-                [5.5248, 5.4798]], grad_fn=<ViewBackward>)
+    >>> model(sample, negative_sample, mode='head-batch')
+    tensor([[5.4962, 5.4199],
+            [5.5059, 5.4798]], grad_fn=<ViewBackward>)
+
+    >>> model(sample, negative_sample, mode='tail-batch')
+    tensor([[5.4521, 5.4199],
+            [5.5248, 5.4798]], grad_fn=<ViewBackward>)
 
     """
 
@@ -60,13 +63,28 @@ class pRotatE(Scoring):
         super().__init__()
         self.pi = pi
 
-    def __call__(self, head, relation, tail, gamma, embedding_range, modulus, mode,  **kwargs):
+    def __call__(
+        self, head, relation, tail, gamma, embedding_range, modulus, mode, **kwargs
+    ):
+        """Compute the score of given facts (heads, relations, tails).
+
+        Parameters
+        ----------
+            head: Embeddings of heads.
+            relation: Embeddings of relations.
+            tail: Embeddings of tails.
+            gamma: Constant integer to stretch the embeddings.
+            embedding_range: Range of the embeddings.
+            modulus: Constant to multiply the score.
+            mode: head-batch or tail-batch.
+
+        """
 
         phase_head = head / (embedding_range.item() / self.pi)
         phase_relation = relation / (embedding_range.item() / self.pi)
         phase_tail = tail / (embedding_range.item() / self.pi)
 
-        if mode == 'head-batch':
+        if mode == "head-batch":
             score = phase_head + (phase_relation - phase_tail)
         else:
             score = (phase_head + phase_relation) - phase_tail

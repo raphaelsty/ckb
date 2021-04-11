@@ -12,13 +12,15 @@ __all__ = ["DistillBert"]
 class DistillBert(BaseModel):
     """DistillBert for contextual representation of entities.
 
-    Parameters:
+    Parameters
+    ----------
         gamma (int): A higher gamma parameter increases the upper and lower bounds of the latent
             space and vice-versa.
         entities (dict): Mapping between entities id and entities label.
         relations (dict): Mapping between relations id and entities label.
 
-    Example:
+    Examples
+    --------
 
         >>> from ckb import models
         >>> from ckb import datasets
@@ -78,7 +80,13 @@ class DistillBert(BaseModel):
     """
 
     def __init__(
-        self, entities, relations, scoring=TransE(), hidden_dim=None, gamma=9, device="cuda"
+        self,
+        entities,
+        relations,
+        scoring=TransE(),
+        hidden_dim=None,
+        gamma=9,
+        device="cuda",
     ):
 
         if hidden_dim is None:
@@ -86,7 +94,6 @@ class DistillBert(BaseModel):
             init_l2 = False
         else:
             init_l2 = True
-
 
         super(DistillBert, self).__init__(
             hidden_dim=hidden_dim,
