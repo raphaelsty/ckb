@@ -1,0 +1,23 @@
+language: python
+# python versions to use during the tests
+python:
+    - "3.8"
+# command to install dependencies
+install:
+    - pip install .
+# command to run tests
+script:
+    - py.test --cov-report term-missing --cov=ckb
+    - py.test --doctest-modules --cov=ckb --cov-report term-missing
+#    - py.test
+branches:
+  only:
+   - master
+after_success:
+    - coveralls
+notifications:
+  email:
+    recipients:
+      - raphael.sourty@gmail.com
+    on_success: always
+    on_failure: always
