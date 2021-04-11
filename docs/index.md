@@ -1,12 +1,14 @@
 <p align=center>Contextual Knowledge Bases</p>
 
----
 
+---
 
 This is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496) which is mainly an ablation study of [KEPLER: A Unified Model for Knowledge Embedding and Pre-trained Language Representation](https://arxiv.org/abs/1911.06136). This tool is based on the library [MKB](https://github.com/raphaelsty/mkb). CKB is designed to be compatible with HuggingFace's models.
 
 
 The CKB library is dedicated to knowledge bases and allows to fine-tune HuggingFace models using the link prediction task. The objective of this fine-tuning task is to make accurate embeddings of knowledge graph entities. The link prediction task aims to train a model to find the missing element of an RDF triplet. For the triplet `(France, is_part_of, ?)`, the model may find the entity `Europe`. This library replaces the embeddings traditionally used with models dedicated to knowledge graphs by an encoder (TransE vs BERT). Here the encoder is a pre-trained transformer. Using a transformer has many advantages such as building contextualized latent representations of entities. Moreover this model can encode entities it has never seen with the textual description of the entity. The training time is much longer than a classic TransE model, however the model converges with fewer epochs.
+
+#### [Documentation](https://raphaelsty.github.io/ckb/)
 
 ## Installation
 
