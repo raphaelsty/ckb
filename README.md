@@ -17,7 +17,7 @@ The CKB library is dedicated to knowledge bases and allows to fine-tune HuggingF
 ## Installation
 
 ```sh
-pip install git+https://github.com/raphaelsty/ckb
+pip install git+https://github.com/raphaelsty/ckb@0.0.2
 ```
 
 ## Train your own model:
