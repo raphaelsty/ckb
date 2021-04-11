@@ -12,7 +12,7 @@ script:
 #    - py.test
 branches:
   only:
-   - master
+   - main
 after_success:
     - coveralls
 notifications:
