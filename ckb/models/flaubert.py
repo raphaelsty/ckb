@@ -26,7 +26,6 @@ class FlauBERT(BaseModel):
     >>> from ckb import datasets
 
     >>> import torch
-
     >>> _ = torch.manual_seed(42)
 
     >>> dataset = datasets.Semanlink(1)
@@ -39,43 +38,13 @@ class FlauBERT(BaseModel):
     ...    device = 'cpu',
     ... )
 
-    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-    >>> model(sample)
-    tensor([[3.1645],
-            [3.2653]], grad_fn=<ViewBackward>)
-
-    >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
-    >>> model(sample)
-    tensor([[-25.7671],
-            [-15.1038]], grad_fn=<ViewBackward>)
-
-    >>> sample = torch.tensor([[1, 0, 0], [1, 2, 2]])
-    >>> model(sample)
-    tensor([[-24.8325],
-            [-14.1621]], grad_fn=<ViewBackward>)
-
-    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-    >>> negative_sample = torch.tensor([[1], [1]])
-
-    >>> model(sample, negative_sample, mode='head-batch')
-    tensor([[-24.8325],
-            [-14.1621]], grad_fn=<ViewBackward>)
-
-    >>> model(sample, negative_sample, mode='tail-batch')
-    tensor([[-25.7670],
-            [-15.1038]], grad_fn=<ViewBackward>)
-
-    >>> model = models.FlauBERT(
-    ...    entities = dataset.entities,
-    ...    relations = dataset.relations,
-    ...    gamma = 9,
-    ...    device = 'cpu',
-    ... )
-
-    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-    >>> model(sample)
-    tensor([[3.6564],
-            [3.5718]], grad_fn=<ViewBackward>)
+    >>> model
+    FlauBERT model
+        Entities embeddings dim  50
+        Relations embeddings dim  50
+        Gamma  9.0
+        Number of entities  5454
+        Number of relations  4
 
     """
 
