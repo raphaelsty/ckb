@@ -31,11 +31,6 @@ class RotatE(Scoring):
     ...    scoring = scoring.RotatE(),
     ... )
 
-    >>> sample = torch.tensor([[0, 0, 0], [2, 2, 2]])
-    >>> model(sample)
-    tensor([[-186.5064],
-            [-153.2208]], grad_fn=<ViewBackward>)
-
     >>> sample = torch.tensor([[0, 0, 1], [2, 2, 1]])
     >>> model(sample)
     tensor([[-203.6809],
