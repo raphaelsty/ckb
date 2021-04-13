@@ -2,7 +2,9 @@
 
 ---
 
-[![Build Status](https://travis-ci.com/raphaelsty/ckb.svg?branch=main)](https://travis-ci.com/raphaelsty/ckb)[![Coverage Status](https://coveralls.io/repos/github/raphaelsty/ckb/badge.svg?branch=main)](https://coveralls.io/github/raphaelsty/ckb?branch=main)
+[![Build Status](https://travis-ci.com/raphaelsty/ckb.svg?branch=main)](https://travis-ci.com/raphaelsty/ckb)[![Coverage Status](https://coveralls.io/repos/github/raphaelsty/ckb/badge.svg?branch=main)](https://coveralls.io/github/raphaelsty/ckb?branch=main)<a href="https://raphaelsty.github.io/ckb/">
+<img src="https://img.shields.io/website?label=docs&style=flat-square&url=https%3A%2F%2Fraphaelsty.github.io/ckb/%2F" alt="documentation">
+</a>
 
 CKB is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496). 
 

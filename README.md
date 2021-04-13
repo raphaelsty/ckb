@@ -21,7 +21,7 @@ The original paper replaces the embeddings traditionally used with models dedica
 ## Installation
 
 ```sh
-pip install git+https://github.com/raphaelsty/ckb@0.0.2
+pip install git+https://github.com/raphaelsty/ckb
 ```
 
 ## Train your own model:
