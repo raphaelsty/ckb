@@ -1,14 +1,18 @@
 <p align=center>Contextual Knowledge Bases</p>
 
-
 ---
 
 [![Build Status](https://travis-ci.com/raphaelsty/ckb.svg?branch=main)](https://travis-ci.com/raphaelsty/ckb)[![Coverage Status](https://coveralls.io/repos/github/raphaelsty/ckb/badge.svg?branch=main)](https://coveralls.io/github/raphaelsty/ckb?branch=main)
 
-This is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496) which is mainly an ablation study of [KEPLER: A Unified Model for Knowledge Embedding and Pre-trained Language Representation](https://arxiv.org/abs/1911.06136). This tool is based on the library [MKB](https://github.com/raphaelsty/mkb). CKB is designed to be compatible with HuggingFace's models.
+CKB is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496). 
 
+This tool allows to train transformers i.e. Bert (and all his friends) to build embeddings of the entities of a knowledge graph. 
 
-The CKB library is dedicated to knowledge bases and allows to fine-tune HuggingFace models using the link prediction task. The objective of this fine-tuning task is to make accurate embeddings of knowledge graph entities. The link prediction task aims to train a model to find the missing element of an RDF triplet. For the triplet `(France, is_part_of, ?)`, the model may find the entity `Europe`. This library replaces the embeddings traditionally used with models dedicated to knowledge graphs by an encoder (TransE vs BERT). Here the encoder is a pre-trained transformer. Using a transformer has many advantages such as building contextualized latent representations of entities. Moreover this model can encode entities it has never seen with the textual description of the entity. The training time is much longer than a classic TransE model, however the model converges with fewer epochs.
+The CKB library is dedicated to knowledge bases and allows to fine-tune HuggingFace models using the link prediction task. The objective of this fine-tuning task is to make accurate embeddings of the knowledge graph entities. The link prediction task aims at training a model to find the missing element of an RDF triplet. For the triplet `(France, is_part_of, ?)`, the model should retrieve the entity `Europe`.
+
+After fine-tuning the transformer on the link prediction task, it can be used to build an entity search engine. It can perform tasks related to the completion of knowledge graphs. Finally, it can be used for any downstream task such as classification.
+
+The original paper replaces the embeddings traditionally used with models dedicated to knowledge graphs with an encoder (TransE vs BERT). Here, the encoder is a pre-trained transformer. The use of a transformer has many advantages such as the construction of contextualized latent representations of entities. In addition, this model can encode entities that it has never seen with the textual description of the entity. The learning time is much longer than a classical TransE model, but the model converges with fewer epochs.
 
 #### [Documentation](https://raphaelsty.github.io/ckb/)
 
@@ -155,8 +159,11 @@ torch.save(model, 'model_ckb.pth')
 
 ```python
 model = torch.load(f'model_ckb.pth')
-
 device = 'cuda'
-model.device = device # Ugly but necessary for now.
+model.device = device 
 model.to(device)
 ```
+
+## Official repository 👍
+
+The official repository is available at [dfdazac/blp](https://github.com/dfdazac/blp). 

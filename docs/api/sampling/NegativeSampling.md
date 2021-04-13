@@ -49,28 +49,15 @@ Generate negative sample to train models.
 ...    seed = 42,
 ... )
 
->>> for data in dataset:
-...     sample, weight, mode = data['sample'], data['weight'], data['mode']
-...     break
+>>> sample = torch.tensor([[0, 0, 4], [1, 0, 4]])
 
 >>> negative_sample = negative_sampling.generate(sample, mode='tail-batch')
-
->>> mode
-'head-batch'
-
->>> sample
-tensor([[0, 0, 4],
-        [1, 0, 4]])
 
 >>> negative_sample
 tensor([[6, 3, 6, 2, 6],
         [6, 3, 6, 2, 6]])
 
 >>> negative_sample = negative_sampling.generate(sample, mode='head-batch')
-
->>> sample
-tensor([[0, 0, 4],
-        [1, 0, 4]])
 
 >>> negative_sample
 tensor([[6, 2, 2, 4, 3],
