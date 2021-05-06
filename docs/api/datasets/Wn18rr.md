@@ -29,7 +29,7 @@ Wn18rr dataset.
 ```python
 >>> from ckb import datasets
 
->>> dataset = datasets.Wn18rr(batch_size=1, pre_compute=True, shuffle=True, seed=42)
+>>> dataset = datasets.Wn18rr(batch_size=1, pre_compute=True, shuffle=True, seed=42, num_workers = 0)
 
 >>> dataset
 Wn18rr dataset
@@ -37,9 +37,9 @@ Wn18rr dataset
     Entities  40943
     Relations  11
     Shuffle  True
-    Train triples  86835
-    Validation triples  3034
-    Test triples  3134
+    Train triples  69585
+    Validation triples  11381
+    Test triples  12037
 ```
 
 ## Methods
