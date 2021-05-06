@@ -83,9 +83,6 @@ class Transformer(BaseModel):
     ):
         if hidden_dim is None:
             hidden_dim = 768
-            init_l2 = False
-        else:
-            init_l2 = True
 
         super(Transformer, self).__init__(
             hidden_dim=hidden_dim,
@@ -104,11 +101,6 @@ class Transformer(BaseModel):
         self.device = device
 
         self.l1 = model
-
-        if init_l2:
-            self.l2 = torch.nn.Linear(768, hidden_dim)
-        else:
-            self.l2 = None
 
     def encoder(self, e):
         """Encode input entities descriptions.
@@ -135,9 +127,4 @@ class Transformer(BaseModel):
 
         hidden_state = output[0]
 
-        pooler = hidden_state[:, 0]
-
-        if self.l2 is not None:
-            pooler = self.l2(pooler)
-
-        return pooler
+        return hidden_state[:, 0]

@@ -2,11 +2,9 @@ import os
 import pathlib
 
 import pandas as pd
-
 from mkb import datasets as mkb_datasets
 
 from ..utils import read_csv
-
 
 __all__ = ["Fb15k237"]
 
@@ -46,20 +44,17 @@ class Fb15k237(mkb_datasets.Dataset):
             Entities  14265
             Relations  237
             Shuffle  True
-            Train triples  271364
-            Validation triples  17528
-            Test triples  20460
-
+            Train triples  214443
+            Validation triples  42133
+            Test triples  52786
 
     References
     ----------
-    [^1]: [Liang Yao, Chengsheng Mao, and Yuan Luo. 2019. Kg- bert: Bert for knowledge graph completion. arXiv preprint arXiv:1909.03193.](https://arxiv.org/abs/1909.03193)
+    [^1]: [Liang Yao, Chengsheng Mao, and Yuan Luo. 2019. Kg-bert: Bert for knowledge graph completion. arXiv preprint arXiv:1909.03193.](https://arxiv.org/abs/1909.03193)
 
     """
 
-    def __init__(
-        self, batch_size, shuffle=True, pre_compute=True, num_workers=1, seed=None
-    ):
+    def __init__(self, batch_size, shuffle=True, pre_compute=True, num_workers=1, seed=None):
 
         self.filename = "fb15k237"
 

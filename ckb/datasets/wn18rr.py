@@ -2,11 +2,9 @@ import os
 import pathlib
 
 import pandas as pd
-
 from mkb import datasets as mkb_datasets
 
 from ..utils import read_csv
-
 
 __all__ = ["Wn18rr"]
 
@@ -37,7 +35,7 @@ class Wn18rr(mkb_datasets.Dataset):
     --------
     >>> from ckb import datasets
 
-    >>> dataset = datasets.Wn18rr(batch_size=1, pre_compute=True, shuffle=True, seed=42)
+    >>> dataset = datasets.Wn18rr(batch_size=1, pre_compute=True, shuffle=True, seed=42, num_workers = 0)
 
     >>> dataset
     Wn18rr dataset
@@ -45,9 +43,10 @@ class Wn18rr(mkb_datasets.Dataset):
         Entities  40943
         Relations  11
         Shuffle  True
-        Train triples  86835
-        Validation triples  3034
-        Test triples  3134
+        Train triples  69585
+        Validation triples  11381
+        Test triples  12037
+
 
     References
     ----------
@@ -55,9 +54,7 @@ class Wn18rr(mkb_datasets.Dataset):
 
     """
 
-    def __init__(
-        self, batch_size, shuffle=True, pre_compute=True, num_workers=1, seed=None
-    ):
+    def __init__(self, batch_size, shuffle=True, pre_compute=True, num_workers=1, seed=None):
 
         self.filename = "wn18rr"
 
