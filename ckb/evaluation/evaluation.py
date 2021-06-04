@@ -1,18 +1,15 @@
-from torch.utils import data
-
 import collections
 import copy
+
 import torch
 import tqdm
-
+from creme import stats
 from mkb import evaluation as mkb_evaluation
 from mkb import models as mkb_models
 from mkb import utils as mkb_utils
-
-from creme import stats
+from torch.utils import data
 
 from ..datasets import TestDataset
-
 
 __all__ = ["Evaluation"]
 
@@ -93,9 +90,7 @@ class Evaluation(mkb_evaluation.Evaluation):
         batch_size,
         true_triples=[],
         device="cuda",
-        num_workers=1,
-        entities_to_drop=[],
-        same_entities={},
+        num_workers=0,
     ):
 
         super().__init__(
@@ -115,18 +110,13 @@ class Evaluation(mkb_evaluation.Evaluation):
             "ComplEx": mkb_models.ComplEx,
         }
 
-        self.entities_to_drop = [self.entities[e] for e in entities_to_drop]
-        self.same_entities = same_entities
-
     def eval(self, model, dataset):
         """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
         return super().eval(model=self.initialize(model=model), dataset=dataset)
 
     def eval_relations(self, model, dataset):
         """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
-        return super().eval_relations(
-            model=self.initialize(model=model), dataset=dataset
-        )
+        return super().eval_relations(model=self.initialize(model=model), dataset=dataset)
 
     def initialize(self, model):
         """Initialize model for evaluation"""
@@ -149,7 +139,7 @@ class Evaluation(mkb_evaluation.Evaluation):
         if model.scoring.name == "pRotatE":
             mkb_model.modulus.data = model.modulus.data
 
-        return mkb_model
+        return mkb_model.to(self.device)
 
     def detail_eval(self, model, dataset, threshold=1.5):
         """Divide input dataset relations into different categories (i.e. ONE-TO-ONE, ONE-TO-MANY,
@@ -162,16 +152,13 @@ class Evaluation(mkb_evaluation.Evaluation):
             model=self.initialize(model=model), dataset=dataset, threshold=threshold
         )
 
-    def _get_test_loader(
-        self, triples, true_triples, entities, relations, mode, entities_to_drop
-    ):
+    def _get_test_loader(self, triples, true_triples, entities, relations, mode):
         test_dataset = TestDataset(
             triples=triples,
             true_triples=true_triples,
             entities=entities,
             relations=relations,
             mode=mode,
-            entities_to_drop=entities_to_drop,
         )
 
         return data.DataLoader(
@@ -190,7 +177,6 @@ class Evaluation(mkb_evaluation.Evaluation):
             entities=self.entities,
             relations=self.relations,
             mode="head-batch",
-            entities_to_drop=self.entities_to_drop,
         )
 
         tail_loader = self._get_test_loader(
@@ -199,7 +185,6 @@ class Evaluation(mkb_evaluation.Evaluation):
             entities=self.entities,
             relations=self.relations,
             mode="tail-batch",
-            entities_to_drop=self.entities_to_drop,
         )
 
         return [head_loader, tail_loader]
@@ -232,8 +217,6 @@ class Evaluation(mkb_evaluation.Evaluation):
             score += filter_bias
 
             argsort = torch.argsort(score, dim=1, descending=True)
-
-            argsort = self.solve_same_entities(argsort=argsort)
 
             if mode == "head-batch":
                 positive_arg = sample[:, 0]
@@ -269,9 +252,7 @@ class Evaluation(mkb_evaluation.Evaluation):
 
         return metrics
 
-    def compute_detailled_score(
-        self, model, test_set, metrics, types_relations, device
-    ):
+    def compute_detailled_score(self, model, test_set, metrics, types_relations, device):
 
         training = False
         if model.training:
@@ -298,8 +279,6 @@ class Evaluation(mkb_evaluation.Evaluation):
 
             argsort = torch.argsort(score, dim=1, descending=True)
 
-            argsort = self.solve_same_entities(argsort=argsort)
-
             if mode == "head-batch":
                 positive_arg = sample[:, 0]
 
@@ -322,29 +301,13 @@ class Evaluation(mkb_evaluation.Evaluation):
 
                 metrics[mode][type_relation]["MR"].update(ranking)
 
-                metrics[mode][type_relation]["HITS@1"].update(
-                    1.0 if ranking <= 1 else 0.0
-                )
+                metrics[mode][type_relation]["HITS@1"].update(1.0 if ranking <= 1 else 0.0)
 
-                metrics[mode][type_relation]["HITS@3"].update(
-                    1.0 if ranking <= 3 else 0.0
-                )
+                metrics[mode][type_relation]["HITS@3"].update(1.0 if ranking <= 3 else 0.0)
 
-                metrics[mode][type_relation]["HITS@10"].update(
-                    1.0 if ranking <= 10 else 0.0
-                )
+                metrics[mode][type_relation]["HITS@10"].update(1.0 if ranking <= 10 else 0.0)
 
         if training:
             model = model.train()
 
         return metrics
-
-    def solve_same_entities(self, argsort):
-        """Replace artificial entities by the target. Some description may be dedicated to the same
-        entities.
-        """
-        for i, sorted_entities in enumerate(argsort):
-            for j, e in enumerate(sorted_entities):
-                if e.item() in self.same_entities:
-                    argsort[i][j] = self.same_entities[e.item()]
-        return argsort

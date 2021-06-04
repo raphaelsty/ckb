@@ -1,8 +1,6 @@
-from mkb import datasets as mkb_datasets
-
-from torch.utils import data
-
 import torch
+from mkb import datasets as mkb_datasets
+from torch.utils import data
 
 
 class Dataset(mkb_datasets.Dataset):
@@ -194,9 +192,7 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
     """
 
-    def __init__(
-        self, triples, true_triples, entities, relations, mode, entities_to_drop
-    ):
+    def __init__(self, triples, true_triples, entities, relations, mode):
         super().__init__(
             triples=triples,
             true_triples=true_triples,
@@ -204,8 +200,6 @@ class TestDataset(mkb_datasets.base.TestDataset):
             relations=relations,
             mode=mode,
         )
-
-        self.entities_to_drop = entities_to_drop
 
     def __len__(self):
         return self.len
@@ -219,12 +213,8 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
             for rand_head in range(self.n_entity):
 
-                # Exlude entities from candidates such as artificial entities created by the user.
-                if rand_head in self.entities_to_drop:
-                    tmp.append((-1e5, head))
-
                 # Candidate answer:
-                elif (rand_head, relation, tail) not in self.true_triples:
+                if (rand_head, relation, tail) not in self.true_triples:
                     tmp.append((0, rand_head))
 
                 # Actual target
@@ -239,12 +229,8 @@ class TestDataset(mkb_datasets.base.TestDataset):
 
             for rand_tail in range(self.n_entity):
 
-                # Exlude entities from candidates such as artificial entities created by the user.
-                if rand_tail in self.entities_to_drop:
-                    tmp.append((-1e5, tail))
-
                 # Candidate answer:
-                elif (head, relation, rand_tail) not in self.true_triples:
+                if (head, relation, rand_tail) not in self.true_triples:
                     tmp.append((0, rand_tail))
 
                 # Actual target
