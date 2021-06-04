@@ -92,11 +92,9 @@ class Transformer(BaseModel):
             gamma=gamma,
         )
 
-        self.model_name = model.name_or_path
-
         self.tokenizer = tokenizer
 
-        self.max_length = self.tokenizer.max_model_input_sizes[self.model_name]
+        self.max_length = self.tokenizer.model_max_length
 
         self.device = device
 
