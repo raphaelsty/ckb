@@ -82,7 +82,7 @@ class Transformer(BaseModel):
         device="cuda",
     ):
         if hidden_dim is None:
-            hidden_dim = 768
+            hidden_dim = model.config.hidden_size
 
         super(Transformer, self).__init__(
             hidden_dim=hidden_dim,
@@ -99,6 +99,11 @@ class Transformer(BaseModel):
         self.device = device
 
         self.l1 = model
+
+        if hidden_dim != self.l1.config.hidden_size:
+            self.linear = torch.nn.Linear(self.l1.config.hidden_size, hidden_dim, bias=False)
+        else:
+            self.linear = None
 
     def encoder(self, e):
         """Encode input entities descriptions.
@@ -125,4 +130,4 @@ class Transformer(BaseModel):
 
         hidden_state = output[0]
 
-        return hidden_state[:, 0]
+        return self.linear(hidden_state[:, 0]) if self.linear is not None else hidden_state[:, 0]
