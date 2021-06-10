@@ -78,6 +78,7 @@ class Transformer(BaseModel):
         relations,
         scoring=TransE(),
         hidden_dim=None,
+        max_length=None,
         gamma=9,
         device="cuda",
     ):
@@ -94,7 +95,7 @@ class Transformer(BaseModel):
 
         self.tokenizer = tokenizer
 
-        self.max_length = self.tokenizer.model_max_length
+        self.max_length = self.tokenizer.model_max_length if max_length is None else max_length
 
         self.device = device
 
