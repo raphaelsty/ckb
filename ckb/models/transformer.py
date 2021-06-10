@@ -1,9 +1,6 @@
-import importlib
-
 import torch
-import transformers
 
-from ..scoring import RotatE, TransE
+from ..scoring import TransE
 from .base import BaseModel
 
 __all__ = ["Transformer"]
