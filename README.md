@@ -20,6 +20,12 @@ The original paper replaces the embeddings traditionally used with models dedica
 
 ## Installation
 
+First we need to install mkb then install ckb 🙂
+
+```sh
+pip install git+https://github.com/raphaelsty/mkb
+```
+
 ```sh
 pip install git+https://github.com/raphaelsty/ckb
 ```
