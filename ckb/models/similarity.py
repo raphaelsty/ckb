@@ -131,8 +131,8 @@ class Similarity(BaseModel):
             return_tensors="pt",
         )
 
-        input_ids = torch.tensor(inputs["input_ids"]).to(self.device)
-        attention_mask = torch.tensor(inputs["attention_mask"]).to(self.device)
+        input_ids = inputs["input_ids"].to(self.device)
+        attention_mask = inputs["attention_mask"].to(self.device)
 
         output = self.model(
             input_ids=input_ids,
