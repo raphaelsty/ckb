@@ -59,18 +59,40 @@ tensor([[6, 3, 6, 2, 6],
 
 >>> negative_sample = negative_sampling.generate(sample, mode='head-batch')
 
+>>> train = [
+...     ("Le stratege", "is_available", "Netflix"),
+...     ("Le stratege", "is_available", "Le stratege"),
+... ]
+
+>>> dataset = datasets.Dataset(
+...    train = train,
+...    batch_size = 2,
+...    seed = 42,
+...    shuffle = False,
+... )
+
+>>> negative_sampling = sampling.NegativeSampling(
+...    size = 5,
+...    train_triples = dataset.train,
+...    entities = dataset.entities,
+...    relations = dataset.relations,
+...    seed = 42,
+... )
+
+>>> sample = torch.tensor([[0, 0, 1], [0, 0, 0]])
+
+>>> negative_sample = negative_sampling.generate(sample, mode='tail-batch')
+
 >>> negative_sample
-tensor([[6, 2, 2, 4, 3],
-        [6, 2, 2, 4, 3]])
+tensor([[0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0]])
 ```
 
 ## Methods
 
 ???- note "generate"
 
-    Generate negative samples from a head, relation tail
-
-    If the mode is set to head-batch, this method will generate a tensor of fake heads. If the mode is set to tail-batch, this method will generate a tensor of fake tails.
+    Generate negative samples from a head, relation tail If the mode is set to head-batch, this method will generate a tensor of fake heads. If the mode is set to tail-batch, this method will generate a tensor of fake tails.
 
     **Parameters**
 

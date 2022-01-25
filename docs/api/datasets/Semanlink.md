@@ -8,6 +8,8 @@ Semanlink dataset.
 
 - **batch_size**
 
+- **use_labels** – defaults to `True`
+
 - **shuffle** – defaults to `True`
 
 - **pre_compute** – defaults to `True`

@@ -117,7 +117,7 @@ class Transformer(BaseModel):
             add_special_tokens=True,
             truncation=True,
             max_length=self.max_length,
-            padding="max_length",
+            padding="longest",
             return_token_type_ids=True,
         )
 

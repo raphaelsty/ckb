@@ -17,6 +17,7 @@ setuptools.setup(
     package_data={
         "ckb": [
             "datasets/semanlink/*.csv",
+            "datasets/semanlink/*.json",
             "datasets/wn18rr/*.csv",
             "datasets/fb15k237/*.csv",
         ]

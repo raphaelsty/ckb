@@ -11,3 +11,4 @@ __pycache__/
 *.icloud
 models/
 api/
+*__pycache__

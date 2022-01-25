@@ -16,11 +16,7 @@ Wrapper for MKB evaluation module.
 
 - **device** – defaults to `cuda`
 
-- **num_workers** – defaults to `1`
-
-- **entities_to_drop** – defaults to `[]`
-
-- **same_entities** – defaults to `{}`
+- **num_workers** – defaults to `0`
 
 
 
@@ -148,14 +144,6 @@ DistillBert model
     **Parameters**
 
     - **model**    
-    
-???- note "solve_same_entities"
-
-    Replace artificial entities by the target. Some description may be dedicated to the same entities.
-
-    **Parameters**
-
-    - **argsort**    
     
 ???- note "types_relations"
 

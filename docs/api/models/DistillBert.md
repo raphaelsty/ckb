@@ -164,7 +164,7 @@ tensor([[3.6504],
 
     Moves all model parameters and buffers to the GPU.
 
-    This also makes associated parameters and buffers different objects. So it should be called before constructing optimizer if the module will live on GPU while being optimized.  Args:     device (int, optional): if specified, all parameters will be         copied to that device  Returns:     Module: self
+    This also makes associated parameters and buffers different objects. So it should be called before constructing optimizer if the module will live on GPU while being optimized.  Arguments:     device (int, optional): if specified, all parameters will be         copied to that device  Returns:     Module: self
 
     **Parameters**
 
@@ -269,11 +269,11 @@ tensor([[3.6504],
 
     Copies parameters and buffers from :attr:`state_dict` into this module and its descendants. If :attr:`strict` is ``True``, then the keys of :attr:`state_dict` must exactly match the keys returned by this module's :meth:`~torch.nn.Module.state_dict` function.
 
-    Args:     state_dict (dict): a dict containing parameters and         persistent buffers.     strict (bool, optional): whether to strictly enforce that the keys         in :attr:`state_dict` match the keys returned by this module's         :meth:`~torch.nn.Module.state_dict` function. Default: ``True``  Returns:     ``NamedTuple`` with ``missing_keys`` and ``unexpected_keys`` fields:         * **missing_keys** is a list of str containing the missing keys         * **unexpected_keys** is a list of str containing the unexpected keys
+    Arguments:     state_dict (dict): a dict containing parameters and         persistent buffers.     strict (bool, optional): whether to strictly enforce that the keys         in :attr:`state_dict` match the keys returned by this module's         :meth:`~torch.nn.Module.state_dict` function. Default: ``True``  Returns:     ``NamedTuple`` with ``missing_keys`` and ``unexpected_keys`` fields:         * **missing_keys** is a list of str containing the missing keys         * **unexpected_keys** is a list of str containing the unexpected keys
 
     **Parameters**
 
-    - **state_dict**     (*'OrderedDict[str, Tensor]'*)    
+    - **state_dict**     (*Dict[str, torch.Tensor]*)    
     - **strict**     (*bool*)     – defaults to `True`    
     
 ???- note "modules"
@@ -339,7 +339,7 @@ tensor([[3.6504],
 
     Registers a backward hook on the module.
 
-    This function is deprecated in favor of :meth:`nn.Module.register_full_backward_hook` and the behavior of this function will change in future versions.  Returns:     :class:`torch.utils.hooks.RemovableHandle`:         a handle that can be used to remove the added hook by calling         ``handle.remove()``
+    .. warning ::      The current implementation will not have the presented behavior     for complex :class:`Module` that perform many operations.     In some failure cases, :attr:`grad_input` and :attr:`grad_output` will only     contain the gradients for a subset of the inputs and outputs.     For such :class:`Module`, you should use :func:`torch.Tensor.register_hook`     directly on a specific input or output to get the required gradients.  The hook will be called every time the gradients with respect to module inputs are computed. The hook should have the following signature::      hook(module, grad_input, grad_output) -> Tensor or None  The :attr:`grad_input` and :attr:`grad_output` may be tuples if the module has multiple inputs or outputs. The hook should not modify its arguments, but it can optionally return a new gradient with respect to input that will be used in place of :attr:`grad_input` in subsequent computations. :attr:`grad_input` will only correspond to the inputs given as positional arguments.  Returns:     :class:`torch.utils.hooks.RemovableHandle`:         a handle that can be used to remove the added hook by calling         ``handle.remove()``
 
     **Parameters**
 
@@ -376,16 +376,6 @@ tensor([[3.6504],
     **Parameters**
 
     - **hook**     (*Callable[..., NoneType]*)    
-    
-???- note "register_full_backward_hook"
-
-    Registers a backward hook on the module.
-
-    The hook will be called every time the gradients with respect to module inputs are computed. The hook should have the following signature::      hook(module, grad_input, grad_output) -> tuple(Tensor) or None  The :attr:`grad_input` and :attr:`grad_output` are tuples that contain the gradients with respect to the inputs and outputs respectively. The hook should not modify its arguments, but it can optionally return a new gradient with respect to the input that will be used in place of :attr:`grad_input` in subsequent computations. :attr:`grad_input` will only correspond to the inputs given as positional arguments and all kwarg arguments are ignored. Entries in :attr:`grad_input` and :attr:`grad_output` will be ``None`` for all non-Tensor arguments.  .. warning ::     Modifying inputs or outputs inplace is not allowed when using backward hooks and     will raise an error.  Returns:     :class:`torch.utils.hooks.RemovableHandle`:         a handle that can be used to remove the added hook by calling         ``handle.remove()``
-
-    **Parameters**
-
-    - **hook**     (*Callable[[ForwardRef('Module'), Union[Tuple[torch.Tensor, ...], torch.Tensor], Union[Tuple[torch.Tensor, ...], torch.Tensor]], Union[NoneType, torch.Tensor]]*)    
     
 ???- note "register_parameter"
 
@@ -437,7 +427,7 @@ tensor([[3.6504],
 
     Moves and/or casts the parameters and buffers.
 
-    This can be called as  .. function:: to(device=None, dtype=None, non_blocking=False)  .. function:: to(dtype, non_blocking=False)  .. function:: to(tensor, non_blocking=False)  .. function:: to(memory_format=torch.channels_last)  Its signature is similar to :meth:`torch.Tensor.to`, but only accepts floating point or complex :attr:`dtype`s. In addition, this method will only cast the floating point or complex parameters and buffers to :attr:`dtype` (if given). The integral parameters and buffers will be moved :attr:`device`, if that is given, but with dtypes unchanged. When :attr:`non_blocking` is set, it tries to convert/move asynchronously with respect to the host if possible, e.g., moving CPU Tensors with pinned memory to CUDA devices.  See below for examples.  .. note::     This method modifies the module in-place.  Args:     device (:class:`torch.device`): the desired device of the parameters         and buffers in this module     dtype (:class:`torch.dtype`): the desired floating point or complex dtype of         the parameters and buffers in this module     tensor (torch.Tensor): Tensor whose dtype and device are the desired         dtype and device for all parameters and buffers in this module     memory_format (:class:`torch.memory_format`): the desired memory         format for 4D parameters and buffers in this module (keyword         only argument)  Returns:     Module: self  Examples::      >>> linear = nn.Linear(2, 2)     >>> linear.weight     Parameter containing:     tensor([[ 0.1913, -0.3420],             [-0.5113, -0.2325]])     >>> linear.to(torch.double)     Linear(in_features=2, out_features=2, bias=True)     >>> linear.weight     Parameter containing:     tensor([[ 0.1913, -0.3420],             [-0.5113, -0.2325]], dtype=torch.float64)     >>> gpu1 = torch.device("cuda:1")     >>> linear.to(gpu1, dtype=torch.half, non_blocking=True)     Linear(in_features=2, out_features=2, bias=True)     >>> linear.weight     Parameter containing:     tensor([[ 0.1914, -0.3420],             [-0.5112, -0.2324]], dtype=torch.float16, device='cuda:1')     >>> cpu = torch.device("cpu")     >>> linear.to(cpu)     Linear(in_features=2, out_features=2, bias=True)     >>> linear.weight     Parameter containing:     tensor([[ 0.1914, -0.3420],             [-0.5112, -0.2324]], dtype=torch.float16)      >>> linear = nn.Linear(2, 2, bias=None).to(torch.cdouble)     >>> linear.weight     Parameter containing:     tensor([[ 0.3741+0.j,  0.2382+0.j],             [ 0.5593+0.j, -0.4443+0.j]], dtype=torch.complex128)     >>> linear(torch.ones(3, 2, dtype=torch.cdouble))     tensor([[0.6122+0.j, 0.1150+0.j],             [0.6122+0.j, 0.1150+0.j],             [0.6122+0.j, 0.1150+0.j]], dtype=torch.complex128)
+    This can be called as  .. function:: to(device=None, dtype=None, non_blocking=False)  .. function:: to(dtype, non_blocking=False)  .. function:: to(tensor, non_blocking=False)  .. function:: to(memory_format=torch.channels_last)  Its signature is similar to :meth:`torch.Tensor.to`, but only accepts floating point desired :attr:`dtype` s. In addition, this method will only cast the floating point parameters and buffers to :attr:`dtype` (if given). The integral parameters and buffers will be moved :attr:`device`, if that is given, but with dtypes unchanged. When :attr:`non_blocking` is set, it tries to convert/move asynchronously with respect to the host if possible, e.g., moving CPU Tensors with pinned memory to CUDA devices.  See below for examples.  .. note::     This method modifies the module in-place.  Args:     device (:class:`torch.device`): the desired device of the parameters         and buffers in this module     dtype (:class:`torch.dtype`): the desired floating point type of         the floating point parameters and buffers in this module     tensor (torch.Tensor): Tensor whose dtype and device are the desired         dtype and device for all parameters and buffers in this module     memory_format (:class:`torch.memory_format`): the desired memory         format for 4D parameters and buffers in this module (keyword         only argument)  Returns:     Module: self  Example::      >>> linear = nn.Linear(2, 2)     >>> linear.weight     Parameter containing:     tensor([[ 0.1913, -0.3420],             [-0.5113, -0.2325]])     >>> linear.to(torch.double)     Linear(in_features=2, out_features=2, bias=True)     >>> linear.weight     Parameter containing:     tensor([[ 0.1913, -0.3420],             [-0.5113, -0.2325]], dtype=torch.float64)     >>> gpu1 = torch.device("cuda:1")     >>> linear.to(gpu1, dtype=torch.half, non_blocking=True)     Linear(in_features=2, out_features=2, bias=True)     >>> linear.weight     Parameter containing:     tensor([[ 0.1914, -0.3420],             [-0.5112, -0.2324]], dtype=torch.float16, device='cuda:1')     >>> cpu = torch.device("cpu")     >>> linear.to(cpu)     Linear(in_features=2, out_features=2, bias=True)     >>> linear.weight     Parameter containing:     tensor([[ 0.1914, -0.3420],             [-0.5112, -0.2324]], dtype=torch.float16)
 
     **Parameters**
 
@@ -458,27 +448,17 @@ tensor([[3.6504],
 
     Casts all parameters and buffers to :attr:`dst_type`.
 
-    Args:     dst_type (type or string): the desired type  Returns:     Module: self
+    Arguments:     dst_type (type or string): the desired type  Returns:     Module: self
 
     **Parameters**
 
     - **dst_type**     (*Union[torch.dtype, str]*)    
     
-???- note "xpu"
-
-    Moves all model parameters and buffers to the XPU.
-
-    This also makes associated parameters and buffers different objects. So it should be called before constructing optimizer if the module will live on XPU while being optimized.  Arguments:     device (int, optional): if specified, all parameters will be         copied to that device  Returns:     Module: self
-
-    **Parameters**
-
-    - **device**     (*Union[int, torch.device, NoneType]*)     – defaults to `None`    
-    
 ???- note "zero_grad"
 
     Sets gradients of all model parameters to zero. See similar function under :class:`torch.optim.Optimizer` for more context.
 
-    Args:     set_to_none (bool): instead of setting to zero, set the grads to None.         See :meth:`torch.optim.Optimizer.zero_grad` for details.
+    Arguments:     set_to_none (bool): instead of setting to zero, set the grads to None.         See :meth:`torch.optim.Optimizer.zero_grad` for details.
 
     **Parameters**
 
