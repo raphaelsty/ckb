@@ -131,14 +131,15 @@ class Similarity(BaseModel):
             return_tensors="pt",
         )
 
+        input_ids = torch.tensor(inputs["input_ids"]).to(self.device)
+        attention_mask = torch.tensor(inputs["attention_mask"]).to(self.device)
+
         output = self.model(
-            input_ids=torch.tensor(inputs["input_ids"]).to(self.device),
-            attention_mask=torch.tensor(inputs["attention_mask"]).to(self.device),
+            input_ids=input_ids,
+            attention_mask=attention_mask,
         )
 
-        sentence_embeddings = self.mean_pooling(
-            output=output, attention_mask=inputs["attention_mask"]
-        )
+        sentence_embeddings = self.mean_pooling(output=output, attention_mask=attention_mask)
 
         if self.l2 is not None:
             sentence_embeddings = self.l2(sentence_embeddings)
