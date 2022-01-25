@@ -193,64 +193,68 @@ class Pipeline:
                 self.evaluation_done = False
                 self.step += 1
 
-            if evaluation is not None and not self.evaluation_done:
+                if evaluation is not None and not self.evaluation_done:
 
-                if (self.step + 1) % self.eval_every == 0:
+                    if (self.step + 1) % self.eval_every == 0:
 
-                    self.evaluation_done = True
+                        self.evaluation_done = True
 
-                    print(f"\n Epoch: {epoch}, step {self.step}.")
+                        print(f"\n Epoch: {epoch}, step {self.step}.")
 
-                    if dataset.valid:
+                        if dataset.valid:
 
-                        self.valid_scores = evaluation.eval(model=model, dataset=dataset.valid)
+                            self.valid_scores = evaluation.eval(model=model, dataset=dataset.valid)
 
-                        self.valid_scores.update(
-                            evaluation.eval_relations(model=model, dataset=dataset.valid)
-                        )
+                            self.valid_scores.update(
+                                evaluation.eval_relations(model=model, dataset=dataset.valid)
+                            )
 
-                        self.print_metrics(description="Validation:", metrics=self.valid_scores)
+                            self.print_metrics(
+                                description="Validation:", metrics=self.valid_scores
+                            )
 
-                    if dataset.test:
+                        if dataset.test:
 
-                        self.test_scores = evaluation.eval(model=model, dataset=dataset.test)
+                            self.test_scores = evaluation.eval(model=model, dataset=dataset.test)
 
-                        self.test_scores.update(
-                            evaluation.eval_relations(model=model, dataset=dataset.test)
-                        )
+                            self.test_scores.update(
+                                evaluation.eval_relations(model=model, dataset=dataset.test)
+                            )
 
-                        self.print_metrics(description="Test:", metrics=self.test_scores)
+                            self.print_metrics(description="Test:", metrics=self.test_scores)
+
+                            if (
+                                self.history_test["HITS@3"] > self.test_scores["HITS@3"]
+                                and self.history_test["HITS@1"] > self.test_scores["HITS@1"]
+                            ):
+                                self.round_without_improvement_test += 1
+                            else:
+                                self.round_without_improvement_test = 0
+                                self.history_test = self.test_scores
+                        else:
+                            if (
+                                self.history_valid["HITS@3"] > self.valid_scores["HITS@3"]
+                                and self.history_valid["HITS@1"] > self.valid_scores["HITS@1"]
+                            ):
+                                self.round_without_improvement_valid += 1
+                            else:
+                                self.round_without_improvement_valid = 0
+                                self.history_valid = self.valid_scores
 
                         if (
-                            self.history_test["HITS@3"] > self.test_scores["HITS@3"]
-                            and self.history_test["HITS@1"] > self.test_scores["HITS@1"]
+                            self.round_without_improvement_valid == self.early_stopping_rounds
+                            or self.round_without_improvement_test == self.early_stopping_rounds
                         ):
-                            self.round_without_improvement_test += 1
-                        else:
-                            self.round_without_improvement_test = 0
-                            self.history_test = self.test_scores
-                    else:
-                        if (
-                            self.history_valid["HITS@3"] > self.valid_scores["HITS@3"]
-                            and self.history_valid["HITS@1"] > self.valid_scores["HITS@1"]
-                        ):
-                            self.round_without_improvement_valid += 1
-                        else:
-                            self.round_without_improvement_valid = 0
-                            self.history_valid = self.valid_scores
 
-                    if (
-                        self.round_without_improvement_valid == self.early_stopping_rounds
-                        or self.round_without_improvement_test == self.early_stopping_rounds
-                    ):
+                            print(f"\n Early stopping at epoch {epoch}, step {self.step}.")
 
-                        print(f"\n Early stopping at epoch {epoch}, step {self.step}.")
+                            self.print_metrics(
+                                description="Validation:", metrics=self.valid_scores
+                            )
 
-                        self.print_metrics(description="Validation:", metrics=self.valid_scores)
+                            self.print_metrics(description="Test:", metrics=self.test_scores)
 
-                        self.print_metrics(description="Test:", metrics=self.test_scores)
-
-                        return self
+                            return self
 
         if dataset.valid and not self.evaluation_done:
 
