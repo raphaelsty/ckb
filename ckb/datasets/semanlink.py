@@ -45,19 +45,18 @@ class Semanlink(mkb_datasets.Dataset):
         >>> dataset
         Semanlink dataset
             Batch size  1
-              Entities  32502
-             Relations  40
-               Shuffle  True
-         Train triples  73828
-         Validation triples  5035
-         Test triples  6094
+            Entities  18236
+            Relations  36
+            Shuffle  True
+            Train triples  47415
+            Validation triples  5055
+            Test triples  6213
 
     """
 
     def __init__(
         self,
         batch_size,
-        use_labels=True,
         shuffle=True,
         pre_compute=True,
         num_workers=1,
@@ -68,18 +67,18 @@ class Semanlink(mkb_datasets.Dataset):
 
         path = pathlib.Path(__file__).parent.joinpath(self.filename)
 
-        if use_labels:
-            with open(f"{path}/labels.json", "r") as entities_labels:
-                labels = json.load(entities_labels)
+        with open(f"{path}/labels.json", "r") as entities_labels:
+            labels = json.load(entities_labels)
 
         train = read_csv(path=f"{path}/train.csv", sep="|")
         valid = read_csv(path=f"{path}/valid.csv", sep="|")
         test = read_csv(path=f"{path}/test.csv", sep="|")
 
-        if use_labels:
-            train = [(labels.get(h, h), r, labels.get(t, t)) for h, r, t in train]
-            valid = [(labels.get(h, h), r, labels.get(t, t)) for h, r, t in valid]
-            test = [(labels.get(h, h), r, labels.get(t, t)) for h, r, t in test]
+        exclude = ["creationDate", "creationTime", "bookmarkOf", "type"]
+
+        train = [(labels.get(h, h), r, labels.get(t, t)) for h, r, t in train if r not in exclude]
+        valid = [(labels.get(h, h), r, labels.get(t, t)) for h, r, t in valid if r not in exclude]
+        test = [(labels.get(h, h), r, labels.get(t, t)) for h, r, t in test if r not in exclude]
 
         super().__init__(
             train=train,

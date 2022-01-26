@@ -110,21 +110,32 @@ class Evaluation(mkb_evaluation.Evaluation):
             "ComplEx": mkb_models.ComplEx,
         }
 
-    def eval(self, model, dataset):
-        """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
-        return super().eval(model=self.initialize(model=model), dataset=dataset)
+        self.embeddings = None
 
-    def eval_relations(self, model, dataset):
+    def eval(self, model, dataset, update_embeddings=True):
         """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
-        return super().eval_relations(model=self.initialize(model=model), dataset=dataset)
+        return super().eval(
+            model=self.initialize(model=model, update_embeddings=update_embeddings),
+            dataset=dataset,
+        )
 
-    def initialize(self, model):
+    def eval_relations(self, model, dataset, update_embeddings=True):
+        """Evaluate selected model with the metrics: MRR, MR, HITS@1, HITS@3, HITS@10"""
+
+        return super().eval_relations(
+            model=self.initialize(model=model, update_embeddings=update_embeddings),
+            dataset=dataset,
+        )
+
+    def initialize(self, model, update_embeddings):
         """Initialize model for evaluation"""
-        embeddings = []
-        with torch.no_grad():
-            for _, e in tqdm.tqdm(model.entities.items(), position=0):
-                embeddings.append(model.encoder([e]))
-        embeddings = torch.cat(embeddings)
+        if update_embeddings or self.embeddings is None:
+
+            self.embeddings = []
+            with torch.no_grad():
+                for _, e in tqdm.tqdm(model.entities.items(), position=0):
+                    self.embeddings.append(model.encoder([e]))
+            self.embeddings = torch.cat(self.embeddings)
 
         mkb_model = self.scoring[model.scoring.name](
             entities={v: k for k, v in model.entities.items()},
@@ -133,7 +144,7 @@ class Evaluation(mkb_evaluation.Evaluation):
             hidden_dim=model.hidden_dim,
         )
 
-        mkb_model.entity_embedding.data = embeddings.data
+        mkb_model.entity_embedding.data = self.embeddings.data
         mkb_model.relation_embedding.data = model.relation_embedding.data
 
         if model.scoring.name == "pRotatE":
@@ -141,7 +152,7 @@ class Evaluation(mkb_evaluation.Evaluation):
 
         return mkb_model.to(self.device)
 
-    def detail_eval(self, model, dataset, threshold=1.5):
+    def detail_eval(self, model, dataset, threshold=1.5, update_embeddings=True):
         """Divide input dataset relations into different categories (i.e. ONE-TO-ONE, ONE-TO-MANY,
         MANY-TO-ONE and MANY-TO-MANY) according to the mapping properties of relationships.
 
@@ -149,7 +160,9 @@ class Evaluation(mkb_evaluation.Evaluation):
             1. [Bordes, Antoine, et al. "Translating embeddings for modeling multi-relational data." Advances in neural information processing systems. 2013.](http://papers.nips.cc/paper/5071-translating-embeddings-for-modeling-multi-relational-data.pdf)
         """
         return super().detail_eval(
-            model=self.initialize(model=model), dataset=dataset, threshold=threshold
+            model=self.initialize(model=model, update_embeddings=update_embeddings),
+            dataset=dataset,
+            threshold=threshold,
         )
 
     def _get_test_loader(self, triples, true_triples, entities, relations, mode):
