@@ -144,6 +144,8 @@ class Pipeline:
 
     def learn(self, model, dataset, sampling, optimizer, loss, evaluation=None):
 
+        entities = {id_e: e for e, id_e in dataset.entities.items()}
+
         for epoch in range(self.epochs):
 
             bar = utils.Bar(dataset=dataset, update_every=10)
@@ -173,8 +175,8 @@ class Pipeline:
                 mapping_tails = {}
 
                 for index, (h, r, t) in enumerate(triples):
-                    e_encode.append(self.entities[h])
-                    e_encode.append(self.entities[t])
+                    e_encode.append(entities[h])
+                    e_encode.append(entities[t])
                     mapping_heads[h] = index
                     mapping_tails[t] = index
 
