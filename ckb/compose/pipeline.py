@@ -71,12 +71,12 @@ class Pipeline:
     ...     entities = dataset.entities,
     ...     relations = dataset.relations,
     ...     true_triples = dataset.train + dataset.valid + dataset.test,
-    ...     batch_size = 1,
+    ...     batch_size = 2,
     ...     device = device,
     ... )
 
     >>> sampling = sampling.NegativeSampling(
-    ...     size = 1,
+    ...     size = 2,
     ...     entities = dataset.entities,
     ...     relations = dataset.relations,
     ...     train_triples = dataset.train,
@@ -190,7 +190,7 @@ class Pipeline:
                 ).unsqueeze(1)
 
                 relations = torch.index_select(
-                    self.relation_embedding, dim=0, index=sample[:, 1]
+                    model.relation_embedding, dim=0, index=sample[:, 1]
                 ).unsqueeze(1)
 
                 score = model.scoring(
@@ -198,7 +198,7 @@ class Pipeline:
                     relation=relations.to(self.device),
                     tail=tails.to(self.device),
                     mode=mode,
-                    gamma=self.gamma,
+                    gamma=model.gamma,
                 )
 
                 negative_scores = []
@@ -223,7 +223,7 @@ class Pipeline:
                             relation=tensor_r.to(self.device),
                             tail=tensor_t.to(self.device),
                             mode=mode,
-                            gamma=self.gamma,
+                            gamma=model.gamma,
                         ).T
                     )
 
