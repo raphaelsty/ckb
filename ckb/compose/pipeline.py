@@ -325,7 +325,7 @@ class Pipeline:
 
         update_embeddings = True
 
-        if dataset.valid and not self.evaluation_done:
+        if dataset.valid and not self.evaluation_done and evaluation is not None:
 
             self.valid_scores = evaluation.eval(
                 model=model, dataset=dataset.valid, update_embeddings=update_embeddings
