@@ -1,11 +1,8 @@
+import mkb.models as mkb_models
 import torch
-
 import torch.nn as nn
 
-import mkb.models as mkb_models
-
 from ..scoring import RotatE
-
 
 __all__ = ["BaseModel"]
 
@@ -83,9 +80,7 @@ class BaseModel(mkb_models.base.BaseModel):
             requires_grad=False,
         )
 
-        self.relation_embedding = nn.Parameter(
-            torch.zeros(self.n_relation, self.relation_dim)
-        )
+        self.relation_embedding = nn.Parameter(torch.zeros(self.n_relation, self.relation_dim))
 
         nn.init.uniform_(
             tensor=self.relation_embedding,
@@ -125,8 +120,8 @@ class BaseModel(mkb_models.base.BaseModel):
 
         if negative_sample is None:
 
-            head = self.encoder(e=head).unsqueeze(1)
-            tail = self.encoder(e=tail).unsqueeze(1)
+            head = self.encoder(e=head, mode="head").unsqueeze(1)
+            tail = self.encoder(e=tail, mode="tail").unsqueeze(1)
 
         else:
 
@@ -142,9 +137,7 @@ class BaseModel(mkb_models.base.BaseModel):
 
     def batch(self, sample, negative_sample=None, mode=None):
         """Process input sample."""
-        sample, shape = self.format_sample(
-            sample=sample, negative_sample=negative_sample
-        )
+        sample, shape = self.format_sample(sample=sample, negative_sample=negative_sample)
 
         relation = torch.index_select(
             self.relation_embedding, dim=0, index=sample[:, 1]
@@ -160,9 +153,11 @@ class BaseModel(mkb_models.base.BaseModel):
 
     def negative_encoding(self, sample, head, tail, negative_sample, mode):
 
+        mode_encoder = "head" if mode == "head-batch" else "tail"
+
         negative_sample = torch.stack(
             [
-                self.encoder([self.entities[e.item()] for e in ns])
+                self.encoder([self.entities[e.item()] for e in ns], mode=mode_encoder)
                 for ns in negative_sample
             ]
         )
@@ -171,13 +166,13 @@ class BaseModel(mkb_models.base.BaseModel):
 
             head = negative_sample
 
-            tail = self.encoder(e=tail).unsqueeze(1)
+            tail = self.encoder(e=tail, mode="tail").unsqueeze(1)
 
         elif mode == "tail-batch":
 
             tail = negative_sample
 
-            head = self.encoder(e=head).unsqueeze(1)
+            head = self.encoder(e=head, mode="head").unsqueeze(1)
 
         return head, tail
 

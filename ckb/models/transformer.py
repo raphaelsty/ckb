@@ -103,7 +103,7 @@ class Transformer(BaseModel):
         else:
             self.linear = None
 
-    def encoder(self, e):
+    def encoder(self, e, mode=None):
         """Encode input entities descriptions.
 
         Parameters:

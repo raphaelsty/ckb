@@ -86,7 +86,7 @@ class FlauBERT(BaseModel):
         else:
             self.l2 = None
 
-    def encoder(self, e):
+    def encoder(self, e, mode=None):
         """Encode input entities descriptions.
 
         Parameters:

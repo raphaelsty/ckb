@@ -105,9 +105,7 @@ class DistillBert(BaseModel):
 
         self.model_name = "distilbert-base-uncased"
 
-        self.tokenizer = transformers.DistilBertTokenizer.from_pretrained(
-            self.model_name
-        )
+        self.tokenizer = transformers.DistilBertTokenizer.from_pretrained(self.model_name)
 
         self.max_length = self.tokenizer.max_model_input_sizes[self.model_name]
 
@@ -120,7 +118,7 @@ class DistillBert(BaseModel):
         else:
             self.l2 = None
 
-    def encoder(self, e):
+    def encoder(self, e, mode=None):
         """Encode input entities descriptions.
 
         Parameters:
