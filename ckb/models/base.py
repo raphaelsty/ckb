@@ -90,6 +90,10 @@ class BaseModel(mkb_models.base.BaseModel):
 
         self.modulus = nn.Parameter(torch.Tensor([[0.5 * self.embedding_range.item()]]))
 
+    @property
+    def twin(self):
+        return False
+
     def forward(self, sample, negative_sample=None, mode=None):
         """Compute scores of input sample, negative sample with respect to the mode."""
 

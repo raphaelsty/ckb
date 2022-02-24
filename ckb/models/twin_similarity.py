@@ -1,4 +1,4 @@
-__all__ = ["DPRSimilarity"]
+__all__ = ["TwinSimilarity"]
 
 import torch
 
@@ -6,7 +6,7 @@ from ..scoring import TransE
 from .base import BaseModel
 
 
-class DPRSimilarity(BaseModel):
+class TwinSimilarity(BaseModel):
     """Two tower Sentence Similarity models wrapper.
 
     Parameters
@@ -36,7 +36,7 @@ class DPRSimilarity(BaseModel):
 
     >>> dataset = datasets.Semanlink(1, pre_compute=False)
 
-    >>> model = models.DPRSimilarity(
+    >>> model = models.TwinSimilarity(
     ...    head_model = head_model,
     ...    tail_model = tail_model,
     ...    head_tokenizer = head_tokenizer,
@@ -97,7 +97,7 @@ class DPRSimilarity(BaseModel):
         if hidden_dim is None:
             hidden_dim = 768
 
-        super(DPRSimilarity, self).__init__(
+        super(TwinSimilarity, self).__init__(
             hidden_dim=hidden_dim,
             entities=entities,
             relations=relations,
@@ -115,6 +115,10 @@ class DPRSimilarity(BaseModel):
         self.tail_max_length = list(self.tail_tokenizer.max_model_input_sizes.values())[0]
 
         self.device = device
+
+    @property
+    def twin(self):
+        return True
 
     def encoder(self, e, mode=None):
         """Encode input entities descriptions.

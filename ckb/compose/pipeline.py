@@ -169,25 +169,42 @@ class Pipeline:
                 if not negative[0]:
                     continue
 
-                e_encode = []
-
                 mapping_heads = {}
                 mapping_tails = {}
 
-                for index, (h, r, t) in enumerate(triples):
-                    e_encode.append(entities[h])
-                    e_encode.append(entities[t])
-                    mapping_heads[h] = index
-                    mapping_tails[t] = index
+                if model.twin:
 
-                embeddings = model.encoder(e_encode)
+                    h_encode = []
+                    t_encode = []
 
-                heads = torch.stack(
-                    [e for index, e in enumerate(embeddings) if index % 2 == 0], dim=0
-                ).unsqueeze(1)
-                tails = torch.stack(
-                    [e for index, e in enumerate(embeddings) if index % 2 != 0], dim=0
-                ).unsqueeze(1)
+                    for index, (h, r, t) in enumerate(triples):
+                        h_encode.append(entities[h])
+                        t_encode.append(entities[t])
+                        mapping_heads[h] = index
+                        mapping_tails[t] = index
+
+                    embeddings_h = model.encoder(h_encode, mode="head")
+                    embeddings_t = model.encoder(t_encode, mode="tail")
+                    heads = torch.stack([e for e in embeddings_h], dim=0).unsqueeze(1)
+                    tails = torch.stack([e for e in embeddings_t], dim=0).unsqueeze(1)
+
+                else:
+
+                    e_encode = []
+                    for index, (h, r, t) in enumerate(triples):
+                        e_encode.append(entities[h])
+                        e_encode.append(entities[t])
+                        mapping_heads[h] = index
+                        mapping_tails[t] = index
+
+                    embeddings = model.encoder(e_encode)
+
+                    heads = torch.stack(
+                        [e for index, e in enumerate(embeddings) if index % 2 == 0], dim=0
+                    ).unsqueeze(1)
+                    tails = torch.stack(
+                        [e for index, e in enumerate(embeddings) if index % 2 != 0], dim=0
+                    ).unsqueeze(1)
 
                 relations = torch.index_select(
                     model.relation_embedding, dim=0, index=sample[:, 1]
