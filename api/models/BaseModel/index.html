@@ -1,0 +1,1429 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Contextual Knowledge bases">
+      
+      
+        <meta name="author" content="Raphael Sourty">
+      
+      
+        <link rel="canonical" href="https://raphaelsty.github.io/ckb/api/models/BaseModel/">
+      
+      <link rel="icon" href="../../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
+    
+    
+      
+        <title>BaseModel - CKB</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.1d29e8d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../css/version-select.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#basemodel" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="CKB" class="md-header__button md-logo" aria-label="CKB" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CKB
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              BaseModel
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/raphaelsty/ckb" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    raphaelsty/ckb
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../overview/" class="md-tabs__link md-tabs__link--active">
+        Api
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="CKB" class="md-nav__button md-logo" aria-label="CKB" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    CKB
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/raphaelsty/ckb" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    raphaelsty/ckb
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Api" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          Compose
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Compose" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Compose
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compose/Pipeline/" class="md-nav__link">
+        Pipeline
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Datasets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Datasets" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Datasets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/Dataset/" class="md-nav__link">
+        Dataset
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/Fb15k237/" class="md-nav__link">
+        Fb15k237
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/Semanlink/" class="md-nav__link">
+        Semanlink
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/Wn18rr/" class="md-nav__link">
+        Wn18rr
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_4">
+          Evaluation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Evaluation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Evaluation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evaluation/Evaluation/" class="md-nav__link">
+        Evaluation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_5">
+          Models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Models" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          Models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          BaseModel
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        BaseModel
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attributes" class="md-nav__link">
+    Attributes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DistillBert/" class="md-nav__link">
+        DistillBert
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FlauBERT/" class="md-nav__link">
+        FlauBERT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Transformer/" class="md-nav__link">
+        Transformer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_6">
+          Sampling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Sampling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          Sampling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sampling/NegativeSampling/" class="md-nav__link">
+        NegativeSampling
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_7" type="checkbox" id="__nav_2_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_7">
+          Scoring
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Scoring" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_7">
+          <span class="md-nav__icon md-icon"></span>
+          Scoring
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scoring/ComplEx/" class="md-nav__link">
+        ComplEx
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scoring/DistMult/" class="md-nav__link">
+        DistMult
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scoring/RotatE/" class="md-nav__link">
+        RotatE
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scoring/Scoring/" class="md-nav__link">
+        Scoring
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scoring/TransE/" class="md-nav__link">
+        TransE
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scoring/pRotatE/" class="md-nav__link">
+        pRotatE
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_8" type="checkbox" id="__nav_2_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_8">
+          Utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Utils" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_8">
+          <span class="md-nav__icon md-icon"></span>
+          Utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/read-csv/" class="md-nav__link">
+        read_csv
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attributes" class="md-nav__link">
+    Attributes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="basemodel">BaseModel<a class="headerlink" href="#basemodel" title="Permanent link">&para;</a></h1>
+<p>Base model class.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>entities</strong></p>
+</li>
+<li>
+<p><strong>relations</strong></p>
+</li>
+<li>
+<p><strong>hidden_dim</strong></p>
+</li>
+<li>
+<p><strong>scoring</strong></p>
+</li>
+<li>
+<p><strong>gamma</strong></p>
+</li>
+</ul>
+<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>embeddings</strong></p>
+<p>Extracts embeddings.</p>
+</li>
+<li>
+<p><strong>name</strong></p>
+</li>
+</ul>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">ckb</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">ckb</span> <span class="kn">import</span> <span class="n">scoring</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">mkb</span> <span class="kn">import</span> <span class="n">datasets</span> <span class="k">as</span> <span class="n">mkb_datasets</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">dataset</span> <span class="o">=</span> <span class="n">mkb_datasets</span><span class="o">.</span><span class="n">CountriesS1</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">(</span>
+<span class="o">...</span>     <span class="n">entities</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">relations</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">relations</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">gamma</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="o">.</span><span class="n">TransE</span><span class="p">(),</span>
+<span class="o">...</span> <span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">head</span><span class="p">,</span> <span class="n">relation</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">head</span>
+<span class="p">[</span><span class="s1">&#39;belize&#39;</span><span class="p">,</span> <span class="s1">&#39;falkland_islands&#39;</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">tail</span>
+<span class="p">[</span><span class="s1">&#39;morocco&#39;</span><span class="p">,</span> <span class="s1">&#39;saint_vincent_and_the_grenadines&#39;</span><span class="p">]</span>
+</code></pre></div>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<details class="- note">
+<summary><strong>call</strong></summary>
+<p>Call self as a function.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>input</strong>    </li>
+<li><strong>kwargs</strong>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>add_module</summary>
+<p>Adds a child module to the current module.</p>
+<p>The module can be accessed as an attribute using the given name.  Args:     name (string): name of the child module. The child module can be         accessed from this module using the given name     module (Module): child module to be added to the module.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>name</strong>     (<em>str</em>)    </li>
+<li><strong>module</strong>     (<em>Union[ForwardRef('Module'), NoneType]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>apply</summary>
+<p>Applies <code>fn</code> recursively to every submodule (as returned by <code>.children()</code>) as well as self. Typical use includes initializing the parameters of a model (see also :ref:<code>nn-init-doc</code>).</p>
+<p>Args:     fn (:class:<code>Module</code> -&gt; None): function to be applied to each submodule  Returns:     Module: self  Example::      &gt;&gt;&gt; @torch.no_grad()     &gt;&gt;&gt; def init_weights(m):     &gt;&gt;&gt;     print(m)     &gt;&gt;&gt;     if type(m) == nn.Linear:     &gt;&gt;&gt;         m.weight.fill_(1.0)     &gt;&gt;&gt;         print(m.weight)     &gt;&gt;&gt; net = nn.Sequential(nn.Linear(2, 2), nn.Linear(2, 2))     &gt;&gt;&gt; net.apply(init_weights)     Linear(in_features=2, out_features=2, bias=True)     Parameter containing:     tensor([[ 1.,  1.],             [ 1.,  1.]])     Linear(in_features=2, out_features=2, bias=True)     Parameter containing:     tensor([[ 1.,  1.],             [ 1.,  1.]])     Sequential(       (0): Linear(in_features=2, out_features=2, bias=True)       (1): Linear(in_features=2, out_features=2, bias=True)     )     Sequential(       (0): Linear(in_features=2, out_features=2, bias=True)       (1): Linear(in_features=2, out_features=2, bias=True)     )</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>fn</strong>     (<em>Callable[[ForwardRef('Module')], NoneType]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>batch</summary>
+<p>Process input sample.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>     – defaults to <code>None</code>    </li>
+<li><strong>mode</strong>     – defaults to <code>None</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>bfloat16</summary>
+<p>Casts all floating point parameters and buffers to <code>bfloat16</code> datatype.</p>
+<p>Returns:     Module: self</p>
+</details>
+<details class="- note">
+<summary>buffers</summary>
+<p>Returns an iterator over module buffers.</p>
+<p>Args:     recurse (bool): if True, then yields buffers of this module         and all submodules. Otherwise, yields only buffers that         are direct members of this module.  Yields:     torch.Tensor: module buffer  Example::      &gt;&gt;&gt; for buf in model.buffers():     &gt;&gt;&gt;     print(type(buf), buf.size())     <class 'torch.Tensor'> (20L,)     <class 'torch.Tensor'> (20L, 1L, 5L, 5L)</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>recurse</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>children</summary>
+<p>Returns an iterator over immediate children modules.</p>
+<p>Yields:     Module: a child module</p>
+</details>
+<details class="- note">
+<summary>cpu</summary>
+<p>Moves all model parameters and buffers to the CPU.</p>
+<p>Returns:     Module: self</p>
+</details>
+<details class="- note">
+<summary>cuda</summary>
+<p>Moves all model parameters and buffers to the GPU.</p>
+<p>This also makes associated parameters and buffers different objects. So it should be called before constructing optimizer if the module will live on GPU while being optimized.  Arguments:     device (int, optional): if specified, all parameters will be         copied to that device  Returns:     Module: self</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>device</strong>     (<em>Union[int, torch.device, NoneType]</em>)     – defaults to <code>None</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>default_batch</summary>
+</details>
+<details class="- note">
+<summary>distill</summary>
+<p>Default distillation method</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>     – defaults to <code>None</code>    </li>
+<li><strong>mode</strong>     – defaults to <code>None</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>double</summary>
+<p>Casts all floating point parameters and buffers to <code>double</code> datatype.</p>
+<p>Returns:     Module: self</p>
+</details>
+<details class="- note">
+<summary>encode</summary>
+<p>Encode input sample, negative sample with respect to the mode.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>     – defaults to <code>None</code>    </li>
+<li><strong>mode</strong>     – defaults to <code>None</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>encoder</summary>
+<p>Encoder should be defined in the children class.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>e</strong>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>eval</summary>
+<p>Sets the module in evaluation mode.</p>
+<p>This has any effect only on certain modules. See documentations of particular modules for details of their behaviors in training/evaluation mode, if they are affected, e.g. :class:<code>Dropout</code>, :class:<code>BatchNorm</code>, etc.  This is equivalent with :meth:<code>self.train(False) &lt;torch.nn.Module.train&gt;</code>.  Returns:     Module: self</p>
+</details>
+<details class="- note">
+<summary>extra_repr</summary>
+<p>Set the extra representation of the module</p>
+<p>To print customized extra information, you should re-implement this method in your own modules. Both single-line and multi-line strings are acceptable.</p>
+</details>
+<details class="- note">
+<summary>float</summary>
+<p>Casts all floating point parameters and buffers to float datatype.</p>
+<p>Returns:     Module: self</p>
+</details>
+<details class="- note">
+<summary>format_sample</summary>
+<p>Adapt input tensor to compute scores.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>     – defaults to <code>None</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>forward</summary>
+<p>Compute scores of input sample, negative sample with respect to the mode.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>     – defaults to <code>None</code>    </li>
+<li><strong>mode</strong>     – defaults to <code>None</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>half</summary>
+<p>Casts all floating point parameters and buffers to <code>half</code> datatype.</p>
+<p>Returns:     Module: self</p>
+</details>
+<details class="- note">
+<summary>head_batch</summary>
+<p>Used to get faster when computing scores for negative samples.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>load_state_dict</summary>
+<p>Copies parameters and buffers from :attr:<code>state_dict</code> into this module and its descendants. If :attr:<code>strict</code> is <code>True</code>, then the keys of :attr:<code>state_dict</code> must exactly match the keys returned by this module's :meth:<code>~torch.nn.Module.state_dict</code> function.</p>
+<p>Arguments:     state_dict (dict): a dict containing parameters and         persistent buffers.     strict (bool, optional): whether to strictly enforce that the keys         in :attr:<code>state_dict</code> match the keys returned by this module's         :meth:<code>~torch.nn.Module.state_dict</code> function. Default: <code>True</code>  Returns:     <code>NamedTuple</code> with <code>missing_keys</code> and <code>unexpected_keys</code> fields:         * <strong>missing_keys</strong> is a list of str containing the missing keys         * <strong>unexpected_keys</strong> is a list of str containing the unexpected keys</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>state_dict</strong>     (<em>Dict[str, torch.Tensor]</em>)    </li>
+<li><strong>strict</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>modules</summary>
+<p>Returns an iterator over all modules in the network.</p>
+<p>Yields:     Module: a module in the network  Note:     Duplicate modules are returned only once. In the following     example, <code>l</code> will be returned only once.  Example::      &gt;&gt;&gt; l = nn.Linear(2, 2)     &gt;&gt;&gt; net = nn.Sequential(l, l)     &gt;&gt;&gt; for idx, m in enumerate(net.modules()):             print(idx, '-&gt;', m)      0 -&gt; Sequential(       (0): Linear(in_features=2, out_features=2, bias=True)       (1): Linear(in_features=2, out_features=2, bias=True)     )     1 -&gt; Linear(in_features=2, out_features=2, bias=True)</p>
+</details>
+<details class="- note">
+<summary>named_buffers</summary>
+<p>Returns an iterator over module buffers, yielding both the name of the buffer as well as the buffer itself.</p>
+<p>Args:     prefix (str): prefix to prepend to all buffer names.     recurse (bool): if True, then yields buffers of this module         and all submodules. Otherwise, yields only buffers that         are direct members of this module.  Yields:     (string, torch.Tensor): Tuple containing the name and buffer  Example::      &gt;&gt;&gt; for name, buf in self.named_buffers():     &gt;&gt;&gt;    if name in ['running_var']:     &gt;&gt;&gt;        print(buf.size())</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>prefix</strong>     (<em>str</em>)     – defaults to ``    </li>
+<li><strong>recurse</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>named_children</summary>
+<p>Returns an iterator over immediate children modules, yielding both the name of the module as well as the module itself.</p>
+<p>Yields:     (string, Module): Tuple containing a name and child module  Example::      &gt;&gt;&gt; for name, module in model.named_children():     &gt;&gt;&gt;     if name in ['conv4', 'conv5']:     &gt;&gt;&gt;         print(module)</p>
+</details>
+<details class="- note">
+<summary>named_modules</summary>
+<p>Returns an iterator over all modules in the network, yielding both the name of the module as well as the module itself.</p>
+<p>Yields:     (string, Module): Tuple of name and module  Note:     Duplicate modules are returned only once. In the following     example, <code>l</code> will be returned only once.  Example::      &gt;&gt;&gt; l = nn.Linear(2, 2)     &gt;&gt;&gt; net = nn.Sequential(l, l)     &gt;&gt;&gt; for idx, m in enumerate(net.named_modules()):             print(idx, '-&gt;', m)      0 -&gt; ('', Sequential(       (0): Linear(in_features=2, out_features=2, bias=True)       (1): Linear(in_features=2, out_features=2, bias=True)     ))     1 -&gt; ('0', Linear(in_features=2, out_features=2, bias=True))</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>memo</strong>     (<em>Union[Set[ForwardRef('Module')], NoneType]</em>)     – defaults to <code>None</code>    </li>
+<li><strong>prefix</strong>     (<em>str</em>)     – defaults to ``    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>named_parameters</summary>
+<p>Returns an iterator over module parameters, yielding both the name of the parameter as well as the parameter itself.</p>
+<p>Args:     prefix (str): prefix to prepend to all parameter names.     recurse (bool): if True, then yields parameters of this module         and all submodules. Otherwise, yields only parameters that         are direct members of this module.  Yields:     (string, Parameter): Tuple containing the name and parameter  Example::      &gt;&gt;&gt; for name, param in self.named_parameters():     &gt;&gt;&gt;    if name in ['bias']:     &gt;&gt;&gt;        print(param.size())</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>prefix</strong>     (<em>str</em>)     – defaults to ``    </li>
+<li><strong>recurse</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>negative_encoding</summary>
+</details>
+<details class="- note">
+<summary>parameters</summary>
+<p>Returns an iterator over module parameters.</p>
+<p>This is typically passed to an optimizer.  Args:     recurse (bool): if True, then yields parameters of this module         and all submodules. Otherwise, yields only parameters that         are direct members of this module.  Yields:     Parameter: module parameter  Example::      &gt;&gt;&gt; for param in model.parameters():     &gt;&gt;&gt;     print(type(param), param.size())     <class 'torch.Tensor'> (20L,)     <class 'torch.Tensor'> (20L, 1L, 5L, 5L)</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>recurse</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>register_backward_hook</summary>
+<p>Registers a backward hook on the module.</p>
+<p>.. warning ::      The current implementation will not have the presented behavior     for complex :class:<code>Module</code> that perform many operations.     In some failure cases, :attr:<code>grad_input</code> and :attr:<code>grad_output</code> will only     contain the gradients for a subset of the inputs and outputs.     For such :class:<code>Module</code>, you should use :func:<code>torch.Tensor.register_hook</code>     directly on a specific input or output to get the required gradients.  The hook will be called every time the gradients with respect to module inputs are computed. The hook should have the following signature::      hook(module, grad_input, grad_output) -&gt; Tensor or None  The :attr:<code>grad_input</code> and :attr:<code>grad_output</code> may be tuples if the module has multiple inputs or outputs. The hook should not modify its arguments, but it can optionally return a new gradient with respect to input that will be used in place of :attr:<code>grad_input</code> in subsequent computations. :attr:<code>grad_input</code> will only correspond to the inputs given as positional arguments.  Returns:     :class:<code>torch.utils.hooks.RemovableHandle</code>:         a handle that can be used to remove the added hook by calling         <code>handle.remove()</code></p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>hook</strong>     (<em>Callable[[ForwardRef('Module'), Union[Tuple[torch.Tensor, ...], torch.Tensor], Union[Tuple[torch.Tensor, ...], torch.Tensor]], Union[NoneType, torch.Tensor]]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>register_buffer</summary>
+<p>Adds a buffer to the module.</p>
+<p>This is typically used to register a buffer that should not to be considered a model parameter. For example, BatchNorm's <code>running_mean</code> is not a parameter, but is part of the module's state. Buffers, by default, are persistent and will be saved alongside parameters. This behavior can be changed by setting :attr:<code>persistent</code> to <code>False</code>. The only difference between a persistent buffer and a non-persistent buffer is that the latter will not be a part of this module's :attr:<code>state_dict</code>.  Buffers can be accessed as attributes using given names.  Args:     name (string): name of the buffer. The buffer can be accessed         from this module using the given name     tensor (Tensor): buffer to be registered.     persistent (bool): whether the buffer is part of this module's         :attr:<code>state_dict</code>.  Example::      &gt;&gt;&gt; self.register_buffer('running_mean', torch.zeros(num_features))</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>name</strong>     (<em>str</em>)    </li>
+<li><strong>tensor</strong>     (<em>Union[torch.Tensor, NoneType]</em>)    </li>
+<li><strong>persistent</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>register_forward_hook</summary>
+<p>Registers a forward hook on the module.</p>
+<p>The hook will be called every time after :func:<code>forward</code> has computed an output. It should have the following signature::      hook(module, input, output) -&gt; None or modified output  The input contains only the positional arguments given to the module. Keyword arguments won't be passed to the hooks and only to the <code>forward</code>. The hook can modify the output. It can modify the input inplace but it will not have effect on forward since this is called after :func:<code>forward</code> is called.  Returns:     :class:<code>torch.utils.hooks.RemovableHandle</code>:         a handle that can be used to remove the added hook by calling         <code>handle.remove()</code></p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>hook</strong>     (<em>Callable[..., NoneType]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>register_forward_pre_hook</summary>
+<p>Registers a forward pre-hook on the module.</p>
+<p>The hook will be called every time before :func:<code>forward</code> is invoked. It should have the following signature::      hook(module, input) -&gt; None or modified input  The input contains only the positional arguments given to the module. Keyword arguments won't be passed to the hooks and only to the <code>forward</code>. The hook can modify the input. User can either return a tuple or a single modified value in the hook. We will wrap the value into a tuple if a single value is returned(unless that value is already a tuple).  Returns:     :class:<code>torch.utils.hooks.RemovableHandle</code>:         a handle that can be used to remove the added hook by calling         <code>handle.remove()</code></p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>hook</strong>     (<em>Callable[..., NoneType]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>register_parameter</summary>
+<p>Adds a parameter to the module.</p>
+<p>The parameter can be accessed as an attribute using given name.  Args:     name (string): name of the parameter. The parameter can be accessed         from this module using the given name     param (Parameter): parameter to be added to the module.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>name</strong>     (<em>str</em>)    </li>
+<li><strong>param</strong>     (<em>Union[torch.nn.parameter.Parameter, NoneType]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>requires_grad_</summary>
+<p>Change if autograd should record operations on parameters in this module.</p>
+<p>This method sets the parameters' :attr:<code>requires_grad</code> attributes in-place.  This method is helpful for freezing part of the module for finetuning or training parts of a model individually (e.g., GAN training).  Args:     requires_grad (bool): whether autograd should record operations on                           parameters in this module. Default: <code>True</code>.  Returns:     Module: self</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>requires_grad</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>save</summary>
+</details>
+<details class="- note">
+<summary>share_memory</summary>
+</details>
+<details class="- note">
+<summary>state_dict</summary>
+<p>Returns a dictionary containing a whole state of the module.</p>
+<p>Both parameters and persistent buffers (e.g. running averages) are included. Keys are corresponding parameter and buffer names.  Returns:     dict:         a dictionary containing a whole state of the module  Example::      &gt;&gt;&gt; module.state_dict().keys()     ['bias', 'weight']</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>destination</strong>     – defaults to <code>None</code>    </li>
+<li><strong>prefix</strong>     – defaults to ``    </li>
+<li><strong>keep_vars</strong>     – defaults to <code>False</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>tail_batch</summary>
+<p>Used to get faster when computing scores for negative samples.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>sample</strong>    </li>
+<li><strong>negative_sample</strong>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>to</summary>
+<p>Moves and/or casts the parameters and buffers.</p>
+<p>This can be called as  .. function:: to(device=None, dtype=None, non_blocking=False)  .. function:: to(dtype, non_blocking=False)  .. function:: to(tensor, non_blocking=False)  .. function:: to(memory_format=torch.channels_last)  Its signature is similar to :meth:<code>torch.Tensor.to</code>, but only accepts floating point desired :attr:<code>dtype</code> s. In addition, this method will only cast the floating point parameters and buffers to :attr:<code>dtype</code> (if given). The integral parameters and buffers will be moved :attr:<code>device</code>, if that is given, but with dtypes unchanged. When :attr:<code>non_blocking</code> is set, it tries to convert/move asynchronously with respect to the host if possible, e.g., moving CPU Tensors with pinned memory to CUDA devices.  See below for examples.  .. note::     This method modifies the module in-place.  Args:     device (:class:<code>torch.device</code>): the desired device of the parameters         and buffers in this module     dtype (:class:<code>torch.dtype</code>): the desired floating point type of         the floating point parameters and buffers in this module     tensor (torch.Tensor): Tensor whose dtype and device are the desired         dtype and device for all parameters and buffers in this module     memory_format (:class:<code>torch.memory_format</code>): the desired memory         format for 4D parameters and buffers in this module (keyword         only argument)  Returns:     Module: self  Example::      &gt;&gt;&gt; linear = nn.Linear(2, 2)     &gt;&gt;&gt; linear.weight     Parameter containing:     tensor([[ 0.1913, -0.3420],             [-0.5113, -0.2325]])     &gt;&gt;&gt; linear.to(torch.double)     Linear(in_features=2, out_features=2, bias=True)     &gt;&gt;&gt; linear.weight     Parameter containing:     tensor([[ 0.1913, -0.3420],             [-0.5113, -0.2325]], dtype=torch.float64)     &gt;&gt;&gt; gpu1 = torch.device("cuda:1")     &gt;&gt;&gt; linear.to(gpu1, dtype=torch.half, non_blocking=True)     Linear(in_features=2, out_features=2, bias=True)     &gt;&gt;&gt; linear.weight     Parameter containing:     tensor([[ 0.1914, -0.3420],             [-0.5112, -0.2324]], dtype=torch.float16, device='cuda:1')     &gt;&gt;&gt; cpu = torch.device("cpu")     &gt;&gt;&gt; linear.to(cpu)     Linear(in_features=2, out_features=2, bias=True)     &gt;&gt;&gt; linear.weight     Parameter containing:     tensor([[ 0.1914, -0.3420],             [-0.5112, -0.2324]], dtype=torch.float16)</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>args</strong>    </li>
+<li><strong>kwargs</strong>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>train</summary>
+<p>Sets the module in training mode.</p>
+<p>This has any effect only on certain modules. See documentations of particular modules for details of their behaviors in training/evaluation mode, if they are affected, e.g. :class:<code>Dropout</code>, :class:<code>BatchNorm</code>, etc.  Args:     mode (bool): whether to set training mode (<code>True</code>) or evaluation                  mode (<code>False</code>). Default: <code>True</code>.  Returns:     Module: self</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>mode</strong>     (<em>bool</em>)     – defaults to <code>True</code>    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>type</summary>
+<p>Casts all parameters and buffers to :attr:<code>dst_type</code>.</p>
+<p>Arguments:     dst_type (type or string): the desired type  Returns:     Module: self</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>dst_type</strong>     (<em>Union[torch.dtype, str]</em>)    </li>
+</ul>
+</details>
+<details class="- note">
+<summary>zero_grad</summary>
+<p>Sets gradients of all model parameters to zero. See similar function under :class:<code>torch.optim.Optimizer</code> for more context.</p>
+<p>Arguments:     set_to_none (bool): instead of setting to zero, set the grads to None.         See :meth:<code>torch.optim.Optimizer.zero_grad</code> for details.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>set_to_none</strong>     (<em>bool</em>)     – defaults to <code>False</code>    </li>
+</ul>
+</details>
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../../evaluation/Evaluation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Evaluation" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Evaluation
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../DistillBert/" class="md-footer__link md-footer__link--next" aria-label="Next: DistillBert" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              DistillBert
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2019 - 2020
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/raphaelsty/ckb" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.instant"], "search": "../../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.0238f547.min.js"></script>
+      
+        <script src="../../../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../../js/version-select.js"></script>
+      
+    
+  </body>
+</html>
