@@ -6,6 +6,8 @@
 <img src="https://img.shields.io/website?label=docs&style=flat-square&url=https%3A%2F%2Fraphaelsty.github.io/ckb/%2F" alt="documentation">
 </a>
 
+**CKB is now available directly on [MKB](https://github.com/raphaelsty/mkb) library.**
+
 CKB is an informal implementation of the model focusing on the link prediction task [Inductive Entity Representations from Text via Link Prediction](https://arxiv.org/abs/2010.03496). 
 
 This tool allows to train transformers i.e. Bert (and all his friends) to build embeddings of the entities of a knowledge graph. 
